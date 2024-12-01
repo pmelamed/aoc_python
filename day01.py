@@ -3,6 +3,15 @@ import re
 import helper
 
 
+class Data:
+    list1 = [ ]
+    list2 = [ ]
+
+    def __init__( self, list1, list2 ):
+        self.list1 = list1
+        self.list2 = list2
+
+
 def prepare( lines ):
     list1 = [ ]
     list2 = [ ]
@@ -12,12 +21,12 @@ def prepare( lines ):
         list2.append( nums[ 1 ] )
     list1.sort()
     list2.sort()
-    return { "list1": list1, "list2": list2 }
+    return Data( list1, list2 )
 
 
 def task1( data ):
-    list1 = data[ "list1" ]
-    list2 = data[ "list2" ]
+    list1 = data.list1
+    list2 = data.list2
     sum_distance = 0
     for distance in [ abs( list1[ index ] - list2[ index ] ) for index in range( len( list1 ) ) ]:
         sum_distance += distance
@@ -25,9 +34,9 @@ def task1( data ):
 
 
 def task2( data ):
-    list1 = data[ "list1" ].copy()
+    list1 = data.list1.copy()
     list1.append( -1 )
-    list2 = data[ "list2" ].copy()
+    list2 = data.list2.copy()
     list2.append( -1 )
     index1 = 0
     index2 = 0
@@ -56,7 +65,7 @@ def task2( data ):
 
 if __name__ == '__main__':
     try:
-        helper.exec_tasks_file( prepare, task1, task2, 'data/day01.sample', 11, None )
+        helper.exec_tasks_file( prepare, task1, task2, 'data/day01.sample', 11, 31 )
         helper.exec_tasks_file( prepare, task1, task2, 'data/day01.in', 765748, 27732508 )
     except Exception as ex:
-        print( f"Problem occurred: {ex}" )
+        helper.print_ex( ex )

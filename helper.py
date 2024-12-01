@@ -1,3 +1,7 @@
+import sys
+import traceback
+
+
 def task_check(func, data, sample):
     result = func(data)
     if sample is None:
@@ -22,3 +26,7 @@ def exec_tasks(prepare_fn, task1_fn, task2_fn, data, check_value1, check_value2)
         data = prepare_fn(data)
     task_check(task1_fn, data, check_value1)
     task_check(task2_fn, data, check_value2)
+
+
+def print_ex( ex ):
+    [ print( line, file=sys.stderr ) for line in traceback.format_exception( ex ) ]
