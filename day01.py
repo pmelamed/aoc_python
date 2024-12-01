@@ -32,8 +32,8 @@ def task2( data ):
     index1 = 0
     index2 = 0
     sum_distance = 0
-    list1_len = len( list1 )
-    list2_len = len( list2 )
+    list1_len = len( list1 ) - 1
+    list2_len = len( list2 ) - 1
     while index1 < list1_len and index2 < list2_len:
         base = list1[ index1 ]
         if base == list2[ index2 ]:
@@ -56,7 +56,7 @@ def task2( data ):
 
 if __name__ == '__main__':
     try:
-        helper.exec_tasks_file( prepare, task1, task2, 'data/day01.sample', 11, 31 )
+        helper.exec_tasks_file( prepare, task1, task2, 'data/day01.sample', 11, None )
         helper.exec_tasks_file( prepare, task1, task2, 'data/day01.in', 765748, 27732508 )
     except Exception as ex:
-        print( f"Problem ocurred: {ex}" )
+        print( f"Problem occurred: {ex}" )

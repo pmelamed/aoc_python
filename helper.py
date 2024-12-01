@@ -1,12 +1,12 @@
 def task_check(func, data, sample):
     result = func(data)
     if sample is None:
-        print(f"RESULT {result}")
+        print(f"\x1b[1;5;30;100m RESULT \x1b[0m - {result}")
     else:
         if result == sample:
-            print(f"OK   - {result} == {sample}")
+            print(f"\x1b[1;5;30;42m   OK   \x1b[0m - {result} == {sample}")
         else:
-            print(f"FAIL - {result} != {sample}")
+            print(f"\x1b[1;5;30;41m  FAIL  \x1b[0m - {result} != {sample}")
 
 
 def exec_tasks_file(prepare_fn, task1_fn, task2_fn, file_name, check_value1, check_value2):
