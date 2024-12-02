@@ -11,7 +11,7 @@ class Data:
         self.levels = levels
 
 
-def prepare( lines: Iterable ) -> Data:
+def prepare( lines: Iterable[ str ] ) -> Data:
     levels = [ ]
     for line in lines:
         levels.append( [ int( x ) for x in re.findall( "[0-9]+", line ) ] )
@@ -38,11 +38,11 @@ def is_row_safe_ext( levels_row: [ int ] ):
     return 0
 
 
-def task1( data: Data ):
+def task1( data: Data ) -> int:
     return sum( [ is_row_safe( row ) for row in data.levels ] )
 
 
-def task2( data: Data ):
+def task2( data: Data ) -> int:
     return sum( [ is_row_safe_ext( row ) for row in data.levels ] )
 
 
