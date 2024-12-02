@@ -1,23 +1,24 @@
 import re
+from collections.abc import Iterable
 
 import helper
 
 
 class Data:
-    levels = [ ]
+    levels: list[ list[ int ] ]
 
-    def __init__( self, levels ):
+    def __init__( self, levels: list[ list[ int ] ] ):
         self.levels = levels
 
 
-def prepare( lines ):
+def prepare( lines: Iterable ) -> Data:
     levels = [ ]
     for line in lines:
         levels.append( [ int( x ) for x in re.findall( "[0-9]+", line ) ] )
     return Data( levels )
 
 
-def is_row_safe( levels_row ):
+def is_row_safe( levels_row: [ int ] ) -> int:
     global_sign = 0
     for index in range( len( levels_row ) - 1 ):
         diff = levels_row[ index ] - levels_row[ index + 1 ]
@@ -28,7 +29,7 @@ def is_row_safe( levels_row ):
     return 1
 
 
-def is_row_safe_ext( levels_row ):
+def is_row_safe_ext( levels_row: [ int ] ):
     if is_row_safe( levels_row ): return 1
     for index in range( len( levels_row ) ):
         row_copy = levels_row.copy()
@@ -37,16 +38,12 @@ def is_row_safe_ext( levels_row ):
     return 0
 
 
-def task1( data ):
-    count = 0
-    for correct in [ is_row_safe( row ) for row in data.levels ]: count += correct
-    return count
+def task1( data: Data ):
+    return sum( [ is_row_safe( row ) for row in data.levels ] )
 
 
-def task2( data ):
-    count = 0
-    for correct in [ is_row_safe_ext( row ) for row in data.levels ]: count += correct
-    return count
+def task2( data: Data ):
+    return sum( [ is_row_safe_ext( row ) for row in data.levels ] )
 
 
 if __name__ == '__main__':

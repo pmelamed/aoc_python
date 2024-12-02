@@ -1,18 +1,19 @@
 import re
+from collections.abc import Iterable
 
 import helper
 
 
 class Data:
-    list1 = [ ]
-    list2 = [ ]
+    list1: list[ int ]
+    list2: list[ int ]
 
-    def __init__( self, list1, list2 ):
+    def __init__( self, list1: list[ int ], list2: list[ int ] ):
         self.list1 = list1
         self.list2 = list2
 
 
-def prepare( lines ):
+def prepare( lines: Iterable[ str ] ) -> Data:
     list1 = [ ]
     list2 = [ ]
     for line in lines:
@@ -24,7 +25,7 @@ def prepare( lines ):
     return Data( list1, list2 )
 
 
-def task1( data ):
+def task1( data: Data ) -> int:
     list1 = data.list1
     list2 = data.list2
     sum_distance = 0
@@ -33,7 +34,7 @@ def task1( data ):
     return sum_distance
 
 
-def task2( data ):
+def task2( data: Data ) -> int:
     list1 = data.list1.copy()
     list1.append( -1 )
     list2 = data.list2.copy()
