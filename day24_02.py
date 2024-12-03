@@ -48,7 +48,7 @@ def task2( data: Data ) -> int:
 
 if __name__ == '__main__':
     try:
-        helper.exec_tasks_file( prepare, task1, task2, 'data/day02.sample', 2, 4 )
-        helper.exec_tasks_file( prepare, task1, task2, 'data/day02.in', 534, 577 )
+        helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day02.sample' ), 2, 4 )
+        helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day02.in' ), 534, 577 )
     except Exception as ex:
         helper.print_ex( ex )
