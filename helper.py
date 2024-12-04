@@ -2,6 +2,10 @@ import sys
 import traceback
 from collections.abc import Callable, Iterable
 
+CROSS_DIRS = ((0, -1), (1, 0), (0, 1), (-1, 0))
+X_DIRS = ((1, -1), (1, 1), (-1, 1), (-1, -1))
+STAR_DIRS = ((0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1))
+
 
 def task_check[ DataT, ResultT: str | int ]( func: Callable[ [ DataT ], ResultT ] | None,
                                              data: DataT,

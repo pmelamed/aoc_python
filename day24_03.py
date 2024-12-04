@@ -39,26 +39,30 @@ def calc_row2( row: str ) -> int:
     return result
 
 
+def main():
+    helper.exec_task(
+        None,
+        task1,
+        [ "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))" ],
+        161
+    )
+    helper.exec_task(
+        None,
+        task2,
+        [ "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))" ],
+        48
+    )
+    helper.exec_tasks(
+        None,
+        task1,
+        task2,
+        helper.read_file( 'data/day24_03.in' ),
+        175615763,
+        74361272 )
+
+
 if __name__ == '__main__':
     try:
-        helper.exec_task(
-            None,
-            task1,
-            [ "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))" ],
-            161
-        )
-        helper.exec_task(
-            None,
-            task2,
-            [ "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))" ],
-            48
-        )
-        helper.exec_tasks(
-            None,
-            task1,
-            task2,
-            helper.read_file( 'data/day03.in' ),
-            175615763,
-            74361272 )
+        main()
     except Exception as ex:
         helper.print_ex( ex )

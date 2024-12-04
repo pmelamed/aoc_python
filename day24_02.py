@@ -46,9 +46,13 @@ def task2( data: Data ) -> int:
     return sum( [ is_row_safe_ext( row ) for row in data.levels ] )
 
 
+def main():
+    helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day24_02.sample' ), 2, 4 )
+    helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day24_02.in' ), 534, 577 )
+
+
 if __name__ == '__main__':
     try:
-        helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day02.sample' ), 2, 4 )
-        helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day02.in' ), 534, 577 )
+        main()
     except Exception as ex:
         helper.print_ex( ex )

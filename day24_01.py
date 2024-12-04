@@ -64,9 +64,13 @@ def task2( data: Data ) -> int:
     return sum_distance
 
 
+def main():
+    helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day24_01.sample' ), 11, 31 )
+    helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day24_01.in' ), 765748, 27732508 )
+
+
 if __name__ == '__main__':
     try:
-        helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day01.sample' ), 11, 31 )
-        helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day01.in' ), 765748, 27732508 )
+        main()
     except Exception as ex:
         helper.print_ex( ex )

@@ -1,22 +1,17 @@
+import itertools
+
 import helper
-
-
-class Data:
-    def __init__( self ):
-        pass
+from helper import STAR_DIRS
 
 
 def task1( lines: list[ str ] ) -> int:
     y_len = len( lines )
     x_len = len( lines[ 0 ] )
-    result: int = 0
-    for dx, dy in [ (-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1) ]:
-        x_from = max( 0, -dx * 4 - 1 )
-        x_to = min( x_len, x_len - dx * 4 + 1 )
-        y_from = max( 0, -dy * 4 - 1 )
-        y_to = min( y_len, y_len - dy * 4 + 1 )
-        result += check_range( lines, x_from, x_to, y_from, y_to, dx, dy )
-    return result
+    return sum( [ check_range( lines,
+                               max( 0, -dx * 4 - 1 ), min( x_len, x_len - dx * 4 + 1 ),
+                               max( 0, -dy * 4 - 1 ), min( y_len, y_len - dy * 4 + 1 ),
+                               dx, dy )
+                  for dx, dy in STAR_DIRS ] )
 
 
 def task2( lines: list[ str ] ) -> int:
@@ -46,9 +41,13 @@ def check_line( ch1: str, ch2: str ) -> bool:
         ch1 == "S" and ch2 == "M"
 
 
+def main():
+    helper.exec_tasks( None, task1, task2, helper.read_file( 'data/day24_04.sample' ), 18, 9 )
+    helper.exec_tasks( None, task1, task2, helper.read_file( 'data/day24_04.in' ), 2493, 1890 )
+
+
 if __name__ == '__main__':
     try:
-        helper.exec_tasks( None, task1, task2, helper.read_file( 'data/day04.sample' ), 18, 9 )
-        helper.exec_tasks( None, task1, task2, helper.read_file( 'data/day04.in' ), 2493, None )
+        main()
     except Exception as ex:
         helper.print_ex( ex )
