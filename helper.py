@@ -10,14 +10,14 @@ STAR_DIRS = ((0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1
 def task_check[ DataT, ResultT: str | int ]( func: Callable[ [ DataT ], ResultT ] | None,
                                              data: DataT,
                                              sample: ResultT ):
-    result = func(data)
+    result = func( data )
     if sample is None:
-        print(f"\x1b[1;5;30;100m RESULT \x1b[0m - {result}")
+        print( f"\x1b[1;5;30;100m RESULT \x1b[0m - {result}" )
     else:
         if result == sample:
-            print(f"\x1b[1;5;30;42m   OK   \x1b[0m - {result} == {sample}")
+            print( f"\x1b[1;5;30;42m   OK   \x1b[0m - {result} == {sample}" )
         else:
-            print(f"\x1b[1;5;30;41m  FAIL  \x1b[0m - {result} != {sample}")
+            print( f"\x1b[1;5;30;41m  FAIL  \x1b[0m - {result} != {sample}" )
 
 
 def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
@@ -28,9 +28,9 @@ def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
         check_value1: ResultT1 | None,
         check_value2: ResultT2 | None ):
     if prepare_fn is not None:
-        data = prepare_fn(data)
-    task_check(task1_fn, data, check_value1)
-    task_check(task2_fn, data, check_value2)
+        data = prepare_fn( data )
+    task_check( task1_fn, data, check_value1 )
+    task_check( task2_fn, data, check_value2 )
 
 
 def exec_task[ DataT, ResultT: str | int ](
@@ -45,10 +45,8 @@ def exec_task[ DataT, ResultT: str | int ](
 
 def read_file( file_name: str ) -> list[ str ]:
     with open( file_name ) as file:
-        return [line[:-1] if line[-1:]=="\n" else line for line in file.readlines()]
+        return [ line[ :-1 ] if line[ -1: ] == "\n" else line for line in file.readlines() ]
 
-# my_list = [1, 2, 3, 4, 5]
-# element = 6
-# result = "Element is present" if element in my_list else "Element is not present"
+
 def print_ex( ex: Exception ):
     [ print( line, file=sys.stderr ) for line in traceback.format_exception( ex ) ]

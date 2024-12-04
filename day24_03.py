@@ -5,6 +5,7 @@ import helper
 
 INSTRUCTION_REGEXP = "(do\\(\\)|don\'t\\(\\)|mul\\(([1-9][0-9]{0,2}),([1-9][0-9]{0,2})\\))"
 
+
 def task1( data: Iterable[ str ] ) -> int:
     return calc_row( " ".join( data ) )
 

@@ -1,5 +1,3 @@
-import itertools
-
 import helper
 from helper import STAR_DIRS
 
