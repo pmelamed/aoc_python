@@ -41,7 +41,10 @@ def exec_task[ DataT, ResultT: str | int ](
 
 def read_file( file_name: str ) -> list[ str ]:
     with open( file_name ) as file:
-        return file.readlines()
+        return [line[:-1] if line[-1:]=="\n" else line for line in file.readlines()]
 
+# my_list = [1, 2, 3, 4, 5]
+# element = 6
+# result = "Element is present" if element in my_list else "Element is not present"
 def print_ex( ex: Exception ):
     [ print( line, file=sys.stderr ) for line in traceback.format_exception( ex ) ]
