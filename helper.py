@@ -50,3 +50,6 @@ def read_file( file_name: str ) -> list[ str ]:
 
 def print_ex( ex: Exception ):
     [ print( line, file=sys.stderr ) for line in traceback.format_exception( ex ) ]
+
+def not_empty_str_predicate( s ):
+    return s != ""
