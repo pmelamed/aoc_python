@@ -51,5 +51,18 @@ def read_file( file_name: str ) -> list[ str ]:
 def print_ex( ex: Exception ):
     [ print( line, file=sys.stderr ) for line in traceback.format_exception( ex ) ]
 
+
 def not_empty_str_predicate( s ):
     return s != ""
+
+
+def turn_right( d: tuple[ int, int ] ) -> tuple[ int, int ]:
+    return -d[ 1 ], d[ 0 ]
+
+
+def turn_left( d: tuple[ int, int ] ) -> tuple[ int, int ]:
+    return d[ 1 ], -d[ 0 ]
+
+
+def count_if[ T ]( condition: Callable[ [ T ], bool ], seq: Iterable[ T ] ) -> int:
+    return sum( [ 1 for obj in seq if condition( obj ) ] )
