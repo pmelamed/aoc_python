@@ -1,3 +1,4 @@
+import datetime
 import sys
 import traceback
 from collections.abc import Callable, Iterable
@@ -10,12 +11,14 @@ STAR_DIRS = ((0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1
 def task_check[ DataT, ResultT: str | int ]( func: Callable[ [ DataT ], ResultT ] | None,
                                              data: DataT,
                                              sample: ResultT ):
+    start = datetime.datetime.now( datetime.timezone.utc )
     result = func( data )
+    delta = int( (datetime.datetime.now( datetime.timezone.utc ) - start).total_seconds() * 1000 )
     if sample is None:
-        print( f"\x1b[1;5;30;100m RESULT \x1b[0m - {result}" )
+        print( f"\x1b[1;5;30;100m RESULT \x1b[0m - {result} \u231B {delta}" )
     else:
         if result == sample:
-            print( f"\x1b[1;5;30;42m   OK   \x1b[0m - {result} == {sample}" )
+            print( f"\x1b[1;5;30;42m   OK   \x1b[0m - {result} \u231B {delta}" )
         else:
             print( f"\x1b[1;5;30;41m  FAIL  \x1b[0m - {result} != {sample}" )
 
@@ -64,11 +67,11 @@ def turn_ccw90( d: tuple[ int, int ] ) -> tuple[ int, int ]:
     return d[ 1 ], -d[ 0 ]
 
 
-def move_forward( pos: tuple[ int, int ], direction: tuple[ int, int ] ) -> tuple[int, int]:
+def move_forward( pos: tuple[ int, int ], direction: tuple[ int, int ] ) -> tuple[ int, int ]:
     return pos[ 0 ] + direction[ 0 ], pos[ 1 ] + direction[ 1 ]
 
 
-def move_backward( pos: tuple[ int, int ], direction: tuple[ int, int ] ) -> tuple[int, int]:
+def move_backward( pos: tuple[ int, int ], direction: tuple[ int, int ] ) -> tuple[ int, int ]:
     return pos[ 0 ] - direction[ 0 ], pos[ 1 ] - direction[ 1 ]
 
 
