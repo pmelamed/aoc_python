@@ -1,6 +1,8 @@
-from collections.abc import Iterable
+import collections
+from collections.abc import Iterable, Callable
 
 import helper
+from helper import move_forward
 
 VISITED_CELL = ord( 'x' )
 OBSTACLE = ord( '#' )
@@ -12,12 +14,14 @@ class Data:
     field: list[ bytearray ]
     start_position: tuple[ int, int ]
     size: tuple[ int, int ]
+    rect: tuple[ int, int, int, int ]
 
     def __init__( self,
                   field: list[ bytearray ],
                   obstacles: set[ tuple[ int, int ] ],
                   start_position: tuple[ int, int ] ):
         self.size = (len( field[ 0 ] ), len( field ))
+        self.rect = (0, 0, len( field[ 0 ] ), len( field ))
         self.field = field
         self.obstacles = obstacles
         self.start_position = start_position
@@ -45,58 +49,65 @@ def prepare( lines: Iterable[ str ] ) -> Data:
 
 
 def task1( data: Data ) -> int:
-    pos = data.start_position
-    direction = (0, -1)
-    field = data.copy_field()
-    while 0 <= pos[ 0 ] < data.size[ 0 ] and 0 <= pos[ 1 ] < data.size[ 1 ]:
-        if field[ pos[ 1 ] ][ pos[ 0 ] ] == OBSTACLE:
-            pos = (pos[ 0 ] - direction[ 0 ], pos[ 1 ] - direction[ 1 ])
-            direction = helper.turn_right( direction )
-        else:
-            field[ pos[ 1 ] ][ pos[ 0 ] ] = VISITED_CELL
-        pos = (pos[ 0 ] + direction[ 0 ], pos[ 1 ] + direction[ 1 ])
-    return sum( [ helper.count_if( lambda c: c == VISITED_CELL, line ) for line in field ] )
+    visited: set[ tuple[ int, int ] ] = set()
+
+    def predicate( pt: tuple[ int, int ], direct: tuple[ int, int ] ) -> bool | None:
+        visited.add( pt )
+        return None
+
+    trace_until( data.start_position, (0, -1), data.obstacles, data.rect, predicate )
+    return len( visited )
 
 
 def task2( data: Data ) -> int:
-    pos = data.start_position
-    direction = (0, -1)
-    field = data.copy_field()
-    added_obstacles = 0
-    while 0 <= pos[ 0 ] < data.size[ 0 ] and 0 <= pos[ 1 ] < data.size[ 1 ]:
-        if field[ pos[ 1 ] ][ pos[ 0 ] ] == OBSTACLE:
-            field[ pos[ 1 ] ][ pos[ 0 ] ] = VISITED_OBSTACLE
-            pos = (pos[ 0 ] - direction[ 0 ], pos[ 1 ] - direction[ 1 ])
-            direction = helper.turn_right( direction )
+    added_obstacles: set[ tuple[ int, int ] ] = set()
+
+    for x in range( data.rect[ 2 ] ):
+        for y in range( data.rect[ 3 ] ):
+            xy = (x, y)
+            if data.start_position != xy and not xy in data.obstacles and should_place_obstacle( data, xy ):
+                added_obstacles.add( xy )
+    return len( added_obstacles )
+
+
+def should_place_obstacle( data: Data, pos: tuple[ int, int ] ) -> tuple[ int, int ] | None:
+    visited: dict[ tuple[ int, int ], set[ tuple[ int, int ] ] ] = collections.defaultdict( set )
+
+    def predicate( pt: tuple[ int, int ], direct: tuple[ int, int ] ) -> bool | None:
+        pt_visited = visited[ pt ]
+        if direct in pt_visited: return True
+        pt_visited.add( direct )
+        return None
+
+    data.obstacles.add( pos )
+    result = trace_until( data.start_position, (0, -1), data.obstacles, data.rect, predicate )
+    data.obstacles.remove( pos )
+    # if result: print( pos )
+    return pos if result else None
+
+
+def trace_until( pos: tuple[ int, int ],
+                 direction: tuple[ int, int ],
+                 obstacles: set[ tuple[ int, int ] ],
+                 rect: tuple[ int, int, int, int ],
+                 predicate: Callable[ [ tuple[ int, int ], tuple[ int, int ] ], bool | None ] ) -> bool:
+    while helper.inside_rect( pos, rect ):
+        if pos in obstacles:
+            pos = helper.move_backward( pos, direction )
+            direction = helper.turn_cw90( direction )
         else:
-            field[ pos[ 1 ] ][ pos[ 0 ] ] = VISITED_CELL
-            added_obstacles += should_place_cell( pos, direction, data.size, field )
-        pos = (pos[ 0 ] + direction[ 0 ], pos[ 1 ] + direction[ 1 ])
-    return added_obstacles
-
-
-def should_place_cell( pos: tuple[ int, int ],
-                       direction: tuple[ int, int ],
-                       size: tuple[ int, int ],
-                       field: list[ bytearray ] ) -> int:
-    x = pos[ 0 ] + direction[ 0 ]
-    y = pos[ 1 ] + direction[ 1 ]
-    if x < 0 or x >= size[ 0 ] or y < 0 or y > size[ 1 ] or field[ y ][ x ] == OBSTACLE: return 0
-    d = helper.turn_right( direction )
-    x = pos[ 0 ]
-    y = pos[ 1 ]
-    while 0 <= x < size[ 0 ] and 0 <= y < size[ 1 ] and field[ y ][ x ] != OBSTACLE:
-        if field[ y ][ x ] == VISITED_OBSTACLE:
-            print( (pos[ 0 ] + direction[ 0 ], pos[ 1 ] + direction[ 1 ]) )
-            return 1
-        x += d[ 0 ]
-        y += d[ 1 ]
-    return 0
+            match predicate( pos, direction ):
+                case True:
+                    return True
+                case False:
+                    return False
+        pos = move_forward( pos, direction )
+    return False
 
 
 def main():
     helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day24_06.sample' ), 41, 6 )
-    helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day24_06.in' ), 5564, None )
+    helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day24_06.in' ), 5564, 1976 )
 
 
 if __name__ == '__main__':

@@ -56,12 +56,24 @@ def not_empty_str_predicate( s ):
     return s != ""
 
 
-def turn_right( d: tuple[ int, int ] ) -> tuple[ int, int ]:
+def turn_cw90( d: tuple[ int, int ] ) -> tuple[ int, int ]:
     return -d[ 1 ], d[ 0 ]
 
 
-def turn_left( d: tuple[ int, int ] ) -> tuple[ int, int ]:
+def turn_ccw90( d: tuple[ int, int ] ) -> tuple[ int, int ]:
     return d[ 1 ], -d[ 0 ]
+
+
+def move_forward( pos: tuple[ int, int ], direction: tuple[ int, int ] ) -> tuple[int, int]:
+    return pos[ 0 ] + direction[ 0 ], pos[ 1 ] + direction[ 1 ]
+
+
+def move_backward( pos: tuple[ int, int ], direction: tuple[ int, int ] ) -> tuple[int, int]:
+    return pos[ 0 ] - direction[ 0 ], pos[ 1 ] - direction[ 1 ]
+
+
+def inside_rect( pos: tuple[ int, int ], rect: tuple[ int, int, int, int ] ) -> bool:
+    return rect[ 0 ] <= pos[ 0 ] < rect[ 2 ] and rect[ 1 ] <= pos[ 1 ] < rect[ 3 ]
 
 
 def count_if[ T ]( condition: Callable[ [ T ], bool ], seq: Iterable[ T ] ) -> int:
