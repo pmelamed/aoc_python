@@ -2,25 +2,18 @@ import collections
 from collections.abc import Iterable, Callable
 
 import helper
-from helper import move_forward
-
-VISITED_CELL = ord( 'x' )
-OBSTACLE = ord( '#' )
-VISITED_OBSTACLE = ord( '*' )
 
 
 class Data:
     obstacles: set[ tuple[ int, int ] ]
     field: list[ bytearray ]
     start_position: tuple[ int, int ]
-    size: tuple[ int, int ]
     rect: tuple[ int, int, int, int ]
 
     def __init__( self,
                   field: list[ bytearray ],
                   obstacles: set[ tuple[ int, int ] ],
                   start_position: tuple[ int, int ] ):
-        self.size = (len( field[ 0 ] ), len( field ))
         self.rect = (0, 0, len( field[ 0 ] ), len( field ))
         self.field = field
         self.obstacles = obstacles
@@ -101,7 +94,7 @@ def trace_until( pos: tuple[ int, int ],
                     return True
                 case False:
                     return False
-        pos = move_forward( pos, direction )
+        pos = helper.move_forward( pos, direction )
     return False
 
 
