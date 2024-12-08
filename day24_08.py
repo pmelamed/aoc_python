@@ -1,6 +1,5 @@
 import collections
 import itertools
-from collections.abc import Iterable
 
 import helper
 
@@ -16,7 +15,7 @@ class Data:
         self.antenna = antenna
 
 
-def prepare( lines: Iterable[ str ] ) -> Data:
+def prepare( lines: list[ str ] ) -> Data:
     antenna = collections.defaultdict( list )
     height = 0
     width = 0

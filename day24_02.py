@@ -1,5 +1,4 @@
 import re
-from collections.abc import Iterable
 
 import helper
 
@@ -11,7 +10,7 @@ class Data:
         self.levels = levels
 
 
-def prepare( lines: Iterable[ str ] ) -> Data:
+def prepare( lines: list[ str ] ) -> Data:
     levels = [ ]
     for line in lines:
         levels.append( [ int( x ) for x in re.findall( "[0-9]+", line ) ] )

@@ -29,10 +29,10 @@ def task_check[ DataT, ResultT: str | int ]( func: Callable[ [ DataT ], ResultT 
 
 
 def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
-        prepare_fn: Callable[ [ Iterable[ str ] ], DataT ] | None,
+        prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
         task1_fn: Callable[ [ DataT ], ResultT1 ],
         task2_fn: Callable[ [ DataT ], ResultT2 ],
-        data: Iterable[ str ] | DataT,
+        data: list[ str ] | DataT,
         check_value1: ResultT1 | None,
         check_value2: ResultT2 | None ):
     if prepare_fn is not None:
@@ -44,7 +44,7 @@ def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
 def exec_task[ DataT, ResultT: str | int ](
         prepare_fn: Callable[ [ Iterable[ str ] ], DataT ] | None,
         task_fn: Callable[ [ DataT ], ResultT ],
-        data: Iterable[ str ] | DataT,
+        data: list[ str ] | DataT,
         check_value: ResultT | None ):
     if prepare_fn is not None:
         data = prepare_fn( data )

@@ -1,5 +1,4 @@
 import re
-from collections.abc import Iterable
 
 import helper
 
@@ -13,7 +12,7 @@ class Data:
         self.list2 = list2
 
 
-def prepare( lines: Iterable[ str ] ) -> Data:
+def prepare( lines: list[ str ] ) -> Data:
     list1 = [ ]
     list2 = [ ]
     for line in lines:
