@@ -44,7 +44,7 @@ def prepare( lines: Iterable[ str ] ) -> Data:
 def task1( data: Data ) -> int:
     visited: set[ tuple[ int, int ] ] = set()
 
-    def predicate( pt: tuple[ int, int ], direct: tuple[ int, int ] ) -> bool | None:
+    def predicate( pt: tuple[ int, int ], _: tuple[ int, int ] ) -> bool | None:
         visited.add( pt )
         return None
 
@@ -75,7 +75,6 @@ def should_place_obstacle( data: Data, pos: tuple[ int, int ] ) -> tuple[ int, i
     data.obstacles.add( pos )
     result = trace_until( data.start_position, (0, -1), data.obstacles, data.rect, predicate )
     data.obstacles.remove( pos )
-    # if result: print( pos )
     return pos if result else None
 
 
