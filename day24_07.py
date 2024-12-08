@@ -57,7 +57,6 @@ def calculate( args: list[ int ], ops: list[ int ] ) -> int:
 
 
 def main():
-    # helper.exec_task( prepare, task1, helper.read_file( 'data/day24_07.sample' ), 3749 )
     helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day24_07.sample' ), 3749, 11387 )
     helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day24_07.in' ), 303766880536, 337041851384440 )
 

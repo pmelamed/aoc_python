@@ -2,6 +2,11 @@ import datetime
 import sys
 import traceback
 from collections.abc import Callable, Iterable
+from typing import TypeAlias
+
+Coord: TypeAlias = tuple[ int, int ]
+Direction: TypeAlias = tuple[ int, int ]
+Rect: TypeAlias = tuple[ int, int, int, int ]
 
 CROSS_DIRS = ((0, -1), (1, 0), (0, 1), (-1, 0))
 X_DIRS = ((1, -1), (1, 1), (-1, 1), (-1, -1))
@@ -81,3 +86,15 @@ def inside_rect( pos: tuple[ int, int ], rect: tuple[ int, int, int, int ] ) -> 
 
 def count_if[ T ]( condition: Callable[ [ T ], bool ], seq: Iterable[ T ] ) -> int:
     return sum( [ 1 for obj in seq if condition( obj ) ] )
+
+
+def coord_add( p1: Coord, p2: Coord ) -> Coord:
+    return p1[ 0 ] + p2[ 0 ], p1[ 1 ] + p2[ 1 ]
+
+
+def coord_sub( p1: Coord, p2: Coord ) -> Coord:
+    return p1[ 0 ] - p2[ 0 ], p1[ 1 ] - p2[ 1 ]
+
+
+def field_rect( width: int, height: int ) -> Rect:
+    return 0, 0, width, height
