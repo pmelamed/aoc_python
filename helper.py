@@ -42,7 +42,7 @@ def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
 
 
 def exec_task[ DataT, ResultT: str | int ](
-        prepare_fn: Callable[ [ Iterable[ str ] ], DataT ] | None,
+        prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
         task_fn: Callable[ [ DataT ], ResultT ],
         data: list[ str ] | DataT,
         check_value: ResultT | None ):
