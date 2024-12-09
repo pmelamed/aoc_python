@@ -63,7 +63,10 @@ def task2( data: Data ) -> int:
         else:
             space = spaces[ index ]
             moved_files.append( (file[ 0 ], space[ 0 ], file[ 2 ]) )
-            spaces[ index ] = (space[ 0 ] + file[ 2 ], space[ 1 ] - file[ 2 ])
+            if space[ 1 ] > file[ 2 ]:
+                spaces[ index ] = (space[ 0 ] + file[ 2 ], space[ 1 ] - file[ 2 ])
+            else:
+                del spaces[ index ]
 
     for file in moved_files:
         result += sum( [ file[ 0 ] * pos for pos in range( file[ 1 ], file[ 1 ] + file[ 2 ] ) ] )
@@ -78,8 +81,11 @@ def move_file( file: FileInfo, empty: SpaceInfo ) -> tuple[ FileInfo, SpaceInfo,
 
 
 def find_target_space( file: FileInfo, spaces: list[ SpaceInfo ] ) -> int:
-    found = [ index for index, space in enumerate( spaces ) if space[0] < file[1] and space[ 1 ] >= file[ 2 ] ]
-    return found[ 0 ] if len( found ) > 0 else -1
+    index = 0
+    while index < len( spaces ) and spaces[ index ][ 0 ] < file[ 1 ]:
+        if spaces[ index ][ 1 ] >= file[ 2 ]: return index
+        index += 1
+    return -1
 
 
 def main():
