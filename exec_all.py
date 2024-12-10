@@ -7,6 +7,7 @@ import day24_06
 import day24_07
 import day24_08
 import day24_09
+import day24_10
 import helper
 
 if __name__ == '__main__':
@@ -29,5 +30,7 @@ if __name__ == '__main__':
         day24_08.main()
         print( "-- 24' 09 ----------------------------------------------" )
         day24_09.main()
+        print( "-- 24' 10 ----------------------------------------------" )
+        day24_10.main()
     except Exception as ex:
         helper.print_ex( ex )

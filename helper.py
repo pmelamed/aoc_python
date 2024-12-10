@@ -2,7 +2,7 @@ import datetime
 import sys
 import traceback
 from collections.abc import Callable, Iterable
-from typing import TypeAlias
+from typing import TypeAlias, Any
 
 Coord: TypeAlias = tuple[ int, int ]
 Direction: TypeAlias = tuple[ int, int ]
@@ -11,6 +11,81 @@ Rect: TypeAlias = tuple[ int, int, int, int ]
 CROSS_DIRS = ((0, -1), (1, 0), (0, 1), (-1, 0))
 X_DIRS = ((1, -1), (1, 1), (-1, 1), (-1, -1))
 STAR_DIRS = ((0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1))
+
+
+class Field[ DataT ]:
+    cells: list[ list[ DataT ] ]
+    height: int
+    width: int
+
+    def __init__[ RawCellT ]( self,
+                              lines: Iterable[ str ],
+                              /, *,
+                              line_filter: Callable[ [ str ], bool ] = lambda s: True,
+                              line_t: Callable[ [ str ], list[ RawCellT ] ] = lambda s: [ c for c in
+                                                                                          bytes( s, "UTF-8" ) ],
+                              cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
+                              cell_t: Callable[ [ RawCellT ], DataT ] ):
+        height = 0
+        width = 0
+        self.cells = [ ]
+        for line in lines:
+            if line_filter( line ):
+                cells = line_t( line )
+                width = max( width, len( cells ) )
+                self.cells.append( [ cell_t( cell ) for cell in cells if cell_filter( cell ) ] )
+                height += 1
+        self.width = width
+        self.height = height
+
+    def __getitem__( self, item: Coord ) -> DataT:
+        return self.cells[ item[ 1 ] ][ item[ 0 ] ]
+
+    def contains( self, pt: Coord ):
+        return 0 <= pt[ 0 ] < self.width and 0 <= pt[ 1 ] < self.height
+
+    def filter( self,
+                filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) \
+            -> Iterable[ tuple[ int, int, DataT ] ]:
+        return FieldFilterIterator( self, filter_fn )
+
+
+class FieldFilterIterator[ DataT ]:
+    x: int
+    y: int
+    field: Field[ DataT ]
+    filter_fn: Callable[ [ int, int, DataT, Field[ DataT ] ], bool ]
+
+    def __init__( self,
+                  field: Field[ DataT ],
+                  filter_fn: Callable[ [ int, int, DataT, Field[ DataT ] ], bool ] ):
+        self.field = field
+        self.filter_fn = filter_fn
+        self.x = self.y = 0
+        pass
+
+    def __iter__( self ):
+        self.x = self.y = 0
+        return self
+
+    def __next__( self ) -> tuple[ int, int, DataT ]:
+        while self.y < self.field.height:
+            while self.x < self.field.width:
+                if self.filter_fn( self.x, self.y, self.field.cells[ self.y ][ self.x ], self.field ):
+                    self.x += 1
+                    return self.x - 1, self.y, self.field.cells[ self.y ][ self.x - 1 ]
+                self.x += 1
+            self.x = 0
+            self.y += 1
+        raise StopIteration()
+
+
+def field_equal_filter[ DataT ]( value: DataT ) -> Callable[ [ int, int, DataT, Field[ DataT ] ], bool ]:
+    return lambda _x, _y, v, _f: v == value
+
+
+def field_digit_cell_t() -> Callable[ [ int ], int ]:
+    return lambda v: v - ord( '0' )
 
 
 def task_check[ DataT, ResultT: str | int ]( func: Callable[ [ DataT ], ResultT ] | None,
