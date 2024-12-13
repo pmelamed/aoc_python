@@ -2,11 +2,11 @@ import datetime
 import sys
 import traceback
 from collections.abc import Callable, Iterable
-from typing import TypeAlias, Any
+from typing import Any
 
-Coord: TypeAlias = tuple[ int, int ]
-Direction: TypeAlias = tuple[ int, int ]
-Rect: TypeAlias = tuple[ int, int, int, int ]
+type Coord = tuple[ int, int ]
+type Direction = tuple[ int, int ]
+type Rect = tuple[ int, int, int, int ]
 
 CROSS_DIRS = ((0, -1), (1, 0), (0, 1), (-1, 0))
 X_DIRS = ((1, -1), (1, 1), (-1, 1), (-1, -1))
@@ -18,28 +18,20 @@ class Field[ DataT ]:
     height: int
     width: int
 
-    def __init__[ RawCellT ]( self,
-                              lines: Iterable[ str ],
-                              /, *,
-                              line_filter: Callable[ [ str ], bool ] = lambda s: True,
-                              line_t: Callable[ [ str ], list[ RawCellT ] ] = lambda s: [ c for c in
-                                                                                          bytes( s, "UTF-8" ) ],
-                              cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
-                              cell_t: Callable[ [ RawCellT ], DataT ] ):
-        height = 0
-        width = 0
-        self.cells = [ ]
-        for line in lines:
-            if line_filter( line ):
-                cells = line_t( line )
-                width = max( width, len( cells ) )
-                self.cells.append( [ cell_t( cell ) for cell in cells if cell_filter( cell ) ] )
-                height += 1
+    def __init__( self, width: int, height: int, cells: list[ list[ DataT ] ] ):
         self.width = width
         self.height = height
+        self.cells = cells
 
     def __getitem__( self, item: Coord ) -> DataT:
         return self.cells[ item[ 1 ] ][ item[ 0 ] ]
+
+    def __setitem__( self, item: Coord, v: DataT ) -> DataT:
+        self.cells[ item[ 1 ] ][ item[ 0 ] ] = v
+        return v
+
+    def __contains__( self, item: Coord ):
+        return self.contains( item )
 
     def contains( self, pt: Coord ):
         return 0 <= pt[ 0 ] < self.width and 0 <= pt[ 1 ] < self.height
@@ -48,6 +40,12 @@ class Field[ DataT ]:
                 filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) \
             -> Iterable[ tuple[ int, int, DataT ] ]:
         return FieldFilterIterator( self, filter_fn )
+
+    def dump( self, cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ) ) -> str:
+        strs = [ [ cell_str_f( x, y, self.cells[ y ][ x ] ) for x in range( self.width ) ]
+                 for y in range( self.height ) ]
+        cell_width = max( max( len( cell ) for cell in line ) for line in strs )
+        return "\n".join( " ".join( cell.rjust( cell_width, " " ) for cell in line ) for line in strs )
 
 
 class FieldFilterIterator[ DataT ]:
@@ -78,6 +76,33 @@ class FieldFilterIterator[ DataT ]:
             self.x = 0
             self.y += 1
         raise StopIteration()
+
+
+def field_from_input[ DataT, RawCellT ]( lines: Iterable[ str ],
+                                         /, *,
+                                         line_filter: Callable[ [ str ], bool ] = lambda s: True,
+                                         line_t: Callable[ [ str ], list[ RawCellT ] ] =
+                                         lambda s: [ c for c in bytes( s, "UTF-8" ) ],
+                                         cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
+                                         cell_t: Callable[ [ RawCellT ], DataT ] = lambda a: a ) -> Field[ DataT ]:
+    height = 0
+    width = 0
+    cells = [ ]
+    for line in lines:
+        if line_filter( line ):
+            line_cells = line_t( line )
+            width = max( width, len( line_cells ) )
+            cells.append( [ cell_t( cell ) for cell in line_cells if cell_filter( cell ) ] )
+            height += 1
+    return Field( width, height, cells )
+
+
+def field_generate[ DataT ]( width: int, height: int, gen_f: Callable[ [ int, int ], DataT ] ) -> Field[ DataT ]:
+    return Field( width, height, [ [ gen_f( x, y ) for x in range( width ) ] for y in range( height ) ] )
+
+
+def field_value[ DataT ]( width: int, height: int, value: DataT ) -> Field[ DataT ]:
+    return Field( width, height, [ [ value for cell in range( width ) ] for line in range( height ) ] )
 
 
 def field_equal_filter[ DataT ]( value: DataT ) -> Callable[ [ int, int, DataT, Field[ DataT ] ], bool ]:

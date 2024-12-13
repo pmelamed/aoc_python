@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+import helper
 from helper import Coord, Field, field_equal_filter, CROSS_DIRS, exec_tasks, move_forward, read_file, print_ex
 
 
@@ -12,7 +13,7 @@ class Data:
 
 
 def prepare( lines: list[ str ] ) -> Data:
-    return Data( Field( lines, cell_t=lambda c: c - ord( '0' ) ) )
+    return Data( helper.field_from_input( lines, cell_t=lambda c: c - ord( '0' ) ) )
 
 
 def task1( data: Data ) -> int:
