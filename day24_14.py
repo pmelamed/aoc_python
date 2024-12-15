@@ -37,10 +37,10 @@ def task2( width: int, height: int, data: Data ) -> int:
                             (pts[ index ][ 1 ] + data[ index ][ 1 ][ 1 ] + height) % height)
             counts[ pts[ index ] ] += 1
         if max( counts.values() ) == 1:
-            # img = Image.new( "L", (width, height) )
-            # draw = ImageDraw.Draw( img )
-            # draw.point( pts, "white" )
-            # img.save( f"e:\\tmp\\day14\\{str( step ).rjust( 6, "0" )}.jpg" )
+            img = Image.new( "L", (width, height) )
+            draw = ImageDraw.Draw( img )
+            draw.point( pts, "white" )
+            img.save( f"data\\day14-{str( step ).rjust( 6, "0" )}.jpg" )
             return step
     return 0
 

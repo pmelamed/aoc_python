@@ -2,7 +2,7 @@ import datetime
 import sys
 import traceback
 from collections.abc import Callable, Iterable
-from typing import Any
+from typing import Any, Optional
 
 type Coord = tuple[ int, int ]
 type Direction = tuple[ int, int ]
@@ -33,6 +33,9 @@ class Field[ DataT ]:
     def __contains__( self, item: Coord ):
         return self.contains( item )
 
+    def __copy__( self ):
+        return Field( self.width, self.height, [ line.copy() for line in self.cells ] )
+
     def contains( self, pt: Coord ):
         return 0 <= pt[ 0 ] < self.width and 0 <= pt[ 1 ] < self.height
 
@@ -40,6 +43,12 @@ class Field[ DataT ]:
                 filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) \
             -> Iterable[ tuple[ int, int, DataT ] ]:
         return FieldFilterIterator( self, filter_fn )
+
+    def find( self, filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) -> Optional[ Coord ]:
+        for y in range( self.height ):
+            for x in range( self.width ):
+                if filter_fn( x, y, self.cells[ y ][ x ], self ): return x, y
+        return None
 
     def dump( self, cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ) ) -> str:
         strs = [ [ cell_str_f( x, y, self.cells[ y ][ x ] ) for x in range( self.width ) ]
