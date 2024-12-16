@@ -33,7 +33,7 @@ class Field[ DataT ]:
     def __contains__( self, item: Coord ):
         return self.contains( item )
 
-    def __copy__( self ):
+    def copy( self ):
         return Field( self.width, self.height, [ line.copy() for line in self.cells ] )
 
     def contains( self, pt: Coord ):
