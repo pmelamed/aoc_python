@@ -1,11 +1,31 @@
-from helper import print_ex, Coord, exec_tasks, Field, field_from_input, move_forward, Direction, field_value, turn_cw90, read_file, turn_ccw90, CROSS_DIRS
+from typing import Optional
+
+from helper import print_ex, Coord, exec_tasks, Field, field_from_input, move_forward, Direction, field_value, \
+    turn_cw90, read_file, turn_ccw90, CROSS_DIRS
+
+
+class WaveCell:
+    coord: Coord
+    direction: Direction
+    points: int
+    parent: Optional[ object ]
+
+    def __init__( self,
+                  coord: Coord,
+                  direction: Direction,
+                  points: int,
+                  parent: Optional[ object ] ):
+        self.coord = coord
+        self.direction = direction
+        self.points = points
+        self.parent = parent
 
 
 class Data:
     field: Field[ int ]
     start: Coord
     end: Coord
-    length: int
+    min_ways: list[ WaveCell ]
 
     def __init__( self,
                   field: Field[ int ],
@@ -14,23 +34,7 @@ class Data:
         self.field = field
         self.start = start
         self.end = end
-
-
-class WaveCell:
-    coord: Coord
-    direction: Direction
-    points: int
-    length: int
-
-    def __init__( self,
-                  coord: Coord,
-                  direction: Direction,
-                  points: int,
-                  length: int ):
-        self.coord = coord
-        self.direction = direction
-        self.points = points
-        self.length = length
+        self.min_ways = [ ]
 
 
 OBSTACLE = ord( '#' )
@@ -55,57 +59,57 @@ def prepare( lines: list[ str ] ) -> Data:
 
 def task1( data: Data ) -> int:
     way_fields = dict( [ (d, field_value( data.field.width, data.field.height, -1 )) for d in CROSS_DIRS ] )
-    dir_field = data.field.copy()
-    wave: list[ WaveCell ] = [ WaveCell( data.start, (1, 0), 0, 1 ) ]
+    wave: list[ WaveCell ] = [ WaveCell( data.start, (1, 0), 0, None ) ]
     min_points = -1
-    min_length = -1
     while wave:
         front = wave.pop()
-        if not is_lower( front.points, min_points ): continue
+        if not is_lower_equal( front.points, min_points ): continue
         if data.field[ front.coord ] == OBSTACLE: continue
         if data.field[ front.coord ] == END:
+            if front.points < min_points: data.min_ways.clear()
             min_points = front.points
-            min_length = front.length
+            data.min_ways.append( front )
             continue
         way_field = way_fields[ front.direction ]
-        if is_lower( front.points, way_field[ front.coord ] ):
+        if is_lower_equal( front.points, way_field[ front.coord ] ):
             way_field[ front.coord ] = front.points
-            # dir_field[ front.coord ] = DIR_CHARS[ front.direction ]
             if front.coord != data.end:
                 wave.append( WaveCell( move_forward( front.coord, front.direction ),
                                        front.direction,
                                        front.points + 1,
-                                       front.length + 1) )
+                                       front ) )
                 direction = turn_cw90( front.direction )
                 wave.append( WaveCell( move_forward( front.coord, direction ),
                                        direction,
                                        front.points + 1001,
-                                       front.length + 1 ) )
+                                       front ) )
                 direction = turn_ccw90( front.direction )
                 wave.append( WaveCell( move_forward( front.coord, direction ),
                                        direction,
                                        front.points + 1001,
-                                       front.length + 1 ) )
-    # print( dir_field.dump( lambda _x, _y, c: chr( c ) ) )
-    data.length = min_length
+                                       front ) )
     return min_points
 
 
 def task2( data: Data ) -> int:
-    return data.length
+    seats = set()
+    for tail in data.min_ways:
+        cell = tail
+        while cell is not None:
+            seats.add( cell.coord )
+            cell = cell.parent
+    return len( seats )
 
 
-def is_lower( way_pts: int, field_pts: int ) -> bool:
-    return field_pts == -1 or way_pts < field_pts
+def is_lower_equal( way_pts: int, field_pts: int ) -> bool:
+    return field_pts == -1 or way_pts <= field_pts
 
 
 def main():
     exec_tasks( prepare, task1, task2, read_file( 'data/day24_16_1.sample' ), 7036, 45 )
     exec_tasks( prepare, task1, task2, read_file( 'data/day24_16_2.sample' ), 11048, 64 )
-    exec_tasks( prepare, task1, task2, read_file( 'data/day24_16.in' ), 134588, None )
+    exec_tasks( prepare, task1, task2, read_file( 'data/day24_16.in' ), 134588, 631 )
 
-
-# 134596 - too high
 
 if __name__ == '__main__':
     try:
