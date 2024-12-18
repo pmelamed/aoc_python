@@ -76,7 +76,7 @@ def task2( pc: Computer ) -> int:
     # 7,5 C = A // 2 ** B           C=0
     # 4,6 B = B ^ C                 B=6
     # 1,4 B = B ^ 4                 B = 4
-    # 5,5 OUT B                     B = 0
+    # 5,5 OUT B % 8                 B = 0
     # 0,3 A = A // 8                A < 8
     # 3,0 JNC 0                     A = 0
     a = find_min_a( pc, 0, 0 )

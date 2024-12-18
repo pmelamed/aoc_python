@@ -50,11 +50,11 @@ class Field[ DataT ]:
                 if filter_fn( x, y, self.cells[ y ][ x ], self ): return x, y
         return None
 
-    def dump( self, cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ) ) -> str:
+    def dump( self, cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ), delim: str = " " ) -> str:
         strs = [ [ cell_str_f( x, y, self.cells[ y ][ x ] ) for x in range( self.width ) ]
                  for y in range( self.height ) ]
         cell_width = max( max( len( cell ) for cell in line ) for line in strs )
-        return "\n".join( " ".join( cell.rjust( cell_width, " " ) for cell in line ) for line in strs )
+        return "\n".join( delim.join( cell.rjust( cell_width, " " ) for cell in line ) for line in strs )
 
 
 class FieldFilterIterator[ DataT ]:
