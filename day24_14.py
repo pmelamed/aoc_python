@@ -40,7 +40,7 @@ def task2( width: int, height: int, data: Data ) -> int:
             img = Image.new( "L", (width, height) )
             draw = ImageDraw.Draw( img )
             draw.point( pts, "white" )
-            img.save( f"data\\day14-{str( step ).rjust( 6, "0" )}.jpg" )
+            img.save( f"data\\day14-{str( step ).rjust( 6, "0" )}.png" )
             return step
     return 0
 
