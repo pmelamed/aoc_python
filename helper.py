@@ -39,8 +39,10 @@ class Field[ DataT ]:
     def contains( self, pt: Coord ):
         return 0 <= pt[ 0 ] < self.width and 0 <= pt[ 1 ] < self.height
 
-    def filter( self,
-                filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) \
+    def filter(
+        self,
+        filter_fn: Callable[ [ int, int, DataT, Any ], bool ]
+        ) \
             -> Iterable[ tuple[ int, int, DataT ] ]:
         return FieldFilterIterator( self, filter_fn )
 
@@ -50,7 +52,9 @@ class Field[ DataT ]:
                 if filter_fn( x, y, self.cells[ y ][ x ], self ): return x, y
         return None
 
-    def dump( self, cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ), delim: str = " " ) -> str:
+    def dump(
+        self, cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ), delim: str = " "
+        ) -> str:
         strs = [ [ cell_str_f( x, y, self.cells[ y ][ x ] ) for x in range( self.width ) ]
                  for y in range( self.height ) ]
         cell_width = max( max( len( cell ) for cell in line ) for line in strs )
@@ -63,9 +67,11 @@ class FieldFilterIterator[ DataT ]:
     field: Field[ DataT ]
     filter_fn: Callable[ [ int, int, DataT, Field[ DataT ] ], bool ]
 
-    def __init__( self,
-                  field: Field[ DataT ],
-                  filter_fn: Callable[ [ int, int, DataT, Field[ DataT ] ], bool ] ):
+    def __init__(
+        self,
+        field: Field[ DataT ],
+        filter_fn: Callable[ [ int, int, DataT, Field[ DataT ] ], bool ]
+        ):
         self.field = field
         self.filter_fn = filter_fn
         self.x = self.y = 0
@@ -87,13 +93,15 @@ class FieldFilterIterator[ DataT ]:
         raise StopIteration()
 
 
-def field_from_input[ DataT, RawCellT ]( lines: Iterable[ str ],
-                                         /, *,
-                                         line_filter: Callable[ [ str ], bool ] = lambda s: True,
-                                         line_t: Callable[ [ str ], list[ RawCellT ] ] =
-                                         lambda s: [ c for c in bytes( s, "UTF-8" ) ],
-                                         cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
-                                         cell_t: Callable[ [ RawCellT ], DataT ] = lambda a: a ) -> Field[ DataT ]:
+def field_from_input[ DataT, RawCellT ](
+    lines: Iterable[ str ],
+    /, *,
+    line_filter: Callable[ [ str ], bool ] = lambda s: True,
+    line_t: Callable[ [ str ], list[ RawCellT ] ] =
+    lambda s: [ c for c in bytes( s, "UTF-8" ) ],
+    cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
+    cell_t: Callable[ [ RawCellT ], DataT ] = lambda a: a
+    ) -> Field[ DataT ]:
     height = 0
     width = 0
     cells = [ ]
@@ -122,9 +130,11 @@ def field_digit_cell_t() -> Callable[ [ int ], int ]:
     return lambda v: v - ord( '0' )
 
 
-def task_check[ DataT, ResultT: str | int ]( func: Callable[ [ DataT ], ResultT ] | None,
-                                             data: DataT,
-                                             sample: ResultT ):
+def task_check[ DataT, ResultT: str | int ](
+    func: Callable[ [ DataT ], ResultT ] | None,
+    data: DataT,
+    sample: ResultT
+    ):
     start = datetime.datetime.now( datetime.timezone.utc )
     result = func( data )
     delta = int( (datetime.datetime.now( datetime.timezone.utc ) - start).total_seconds() * 1000 )
@@ -138,12 +148,13 @@ def task_check[ DataT, ResultT: str | int ]( func: Callable[ [ DataT ], ResultT 
 
 
 def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
-        prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
-        task1_fn: Callable[ [ DataT ], ResultT1 ],
-        task2_fn: Callable[ [ DataT ], ResultT2 ],
-        data: list[ str ] | DataT,
-        check_value1: ResultT1 | None,
-        check_value2: ResultT2 | None ):
+    prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
+    task1_fn: Callable[ [ DataT ], ResultT1 ],
+    task2_fn: Callable[ [ DataT ], ResultT2 ],
+    data: list[ str ] | DataT,
+    check_value1: ResultT1 | None,
+    check_value2: ResultT2 | None
+):
     if prepare_fn is not None:
         data = prepare_fn( data )
     task_check( task1_fn, data, check_value1 )
@@ -151,10 +162,11 @@ def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
 
 
 def exec_task[ DataT, ResultT: str | int ](
-        prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
-        task_fn: Callable[ [ DataT ], ResultT ],
-        data: list[ str ] | DataT,
-        check_value: ResultT | None ):
+    prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
+    task_fn: Callable[ [ DataT ], ResultT ],
+    data: list[ str ] | DataT,
+    check_value: ResultT | None
+):
     if prepare_fn is not None:
         data = prepare_fn( data )
     task_check( task_fn, data, check_value )
@@ -166,7 +178,7 @@ def read_file( file_name: str ) -> list[ str ]:
 
 
 def print_ex( ex: Exception ):
-    [ print( line, file=sys.stderr ) for line in traceback.format_exception( ex ) ]
+    [ print( line, file = sys.stderr ) for line in traceback.format_exception( ex ) ]
 
 
 def not_empty_str_predicate( s ):
@@ -203,6 +215,10 @@ def coord_add( p1: Coord, p2: Coord ) -> Coord:
 
 def coord_sub( p1: Coord, p2: Coord ) -> Coord:
     return p1[ 0 ] - p2[ 0 ], p1[ 1 ] - p2[ 1 ]
+
+
+def manhattan( pt1: Coord, pt2: Coord ) -> int:
+    return abs( pt1[ 0 ] - pt2[ 0 ] ) + abs( pt1[ 1 ] - pt2[ 1 ] )
 
 
 def field_rect( width: int, height: int ) -> Rect:
