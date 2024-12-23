@@ -1,12 +1,10 @@
 import re
 from collections import defaultdict
-from functools import partial
-from functools import reduce
+from functools import partial, reduce
 
 from PIL import Image, ImageDraw
 
-from helper import print_ex, Coord, Direction, exec_task, exec_tasks
-from helper import read_file
+from helper import Coord, Direction, exec_task, exec_tasks, print_ex, read_file
 
 type RobotData = tuple[ Coord, Direction ]
 type Data = list[ RobotData ]

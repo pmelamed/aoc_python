@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 import helper
-from helper import Coord, Field, field_equal_filter, CROSS_DIRS, exec_tasks, move_forward, read_file, print_ex
+from helper import Coord, CROSS_DIRS, exec_tasks, Field, field_equal_filter, move_forward, print_ex, read_file
 
 
 class Data:

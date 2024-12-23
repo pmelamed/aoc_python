@@ -1,7 +1,7 @@
 from typing import Optional
 
-from helper import print_ex, Coord, exec_tasks, Field, field_from_input, move_forward, Direction, field_value, \
-    turn_cw90, read_file, turn_ccw90, CROSS_DIRS
+from helper import Coord, CROSS_DIRS, Direction, exec_tasks, Field, field_from_input, field_value, move_forward, \
+    print_ex, read_file, turn_ccw90, turn_cw90
 
 
 class WaveCell:

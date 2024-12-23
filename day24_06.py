@@ -1,5 +1,5 @@
 import collections
-from collections.abc import Iterable, Callable
+from collections.abc import Callable, Iterable
 
 import helper
 

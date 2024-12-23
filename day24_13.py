@@ -1,8 +1,7 @@
 import itertools
 import re
 
-from helper import exec_tasks, print_ex
-from helper import read_file
+from helper import exec_tasks, print_ex, read_file
 
 type Case = tuple[ int, int, int, int, int, int ]
 type Data = list[ Case ]

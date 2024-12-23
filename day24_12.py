@@ -1,8 +1,8 @@
 import itertools
 from collections import defaultdict
 
-from helper import Coord, CROSS_DIRS, move_forward, read_file, Direction
-from helper import exec_tasks, print_ex, Field, field_from_input, field_value
+from helper import Coord, CROSS_DIRS, Direction, exec_tasks, Field, field_from_input, field_value, move_forward, \
+    print_ex, read_file
 
 
 def prepare( lines: list[ str ] ) -> tuple[ Field[ int ], Field[ int ], dict[ int, int ], dict[ int, str ] ]:

@@ -1,8 +1,7 @@
 from typing import Callable
 
-from helper import print_ex, Coord, exec_tasks, Field, field_from_input, move_forward, move_backward, exec_task, \
-    Direction
-from helper import read_file
+from helper import Coord, Direction, exec_task, exec_tasks, Field, field_from_input, move_backward, move_forward, \
+    print_ex, read_file
 
 type Data = tuple[ Field[ int ], str, Coord ]
 
