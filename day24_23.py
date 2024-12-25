@@ -26,9 +26,9 @@ def task1( data: Data ) -> int:
             if vertice1[ 0 ] == 't' and vertice1 < t_node: continue
             peer_vertex = data.graph[ vertice1 ]
             for idx2 in range( idx1 + 1, len( vertex ) ):
-                vetice2 = vertex[ idx2 ]
-                if vetice2[ 0 ] == 't' and vetice2 < t_node: continue
-                if vetice2 in peer_vertex:
+                vertice2 = vertex[ idx2 ]
+                if vertice2[ 0 ] == 't' and vertice2 < t_node: continue
+                if vertice2 in peer_vertex:
                     count += 1
     return count
 
