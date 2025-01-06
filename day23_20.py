@@ -1,5 +1,9 @@
+import functools
+import math
 import re
 from collections import defaultdict, deque
+from functools import reduce
+from typing import Any, Callable, Optional
 
 import helper
 
@@ -55,20 +59,39 @@ def prepare( lines: list[ str ] ) -> Modules:
 
 def task1( modules: Modules ) -> int:
     levels: dict[ bool, int ] = { False: 0, True: 0 }
-    sim_data: SimData = SimData(modules)
-    for _ in range( 1000 ): simulate(modules, sim_data, levels)
+
+    def update_level( _n, level: bool, _i ):
+        levels[ level ] += 1
+
+    sim_data: SimData = SimData( modules )
+    for _ in range( 1000 ): simulate( modules, sim_data, update_level )
     return levels[ True ] * levels[ False ]
 
 
 def task2( modules: Modules ) -> int:
-    return 0
+    sim_data: SimData = SimData( modules )
+    src_module = modules[ modules[ "rx" ].inputs[ 0 ] ]
+    src_inputs = sim_data.inv_inputs[ src_module.name ]
+    first_high: list[ Optional[ int ] ] = len( src_module.inputs ) * [ None ]
 
-def simulate( modules: Modules, sim_data: SimData, levels: dict[bool, int] ):
+    def interceptor( step: int, name: str, level: bool, no: int ):
+        if level and name == src_module.name: first_high[ no ] = step
+
+    index = 0
+    while not all( first_high ):
+        index += 1
+        simulate( modules, sim_data, functools.partial( interceptor, index ) )
+    gcd = math.gcd( *first_high )
+    lcm = reduce( lambda r, v: r * v // gcd, first_high, gcd )
+    return lcm
+
+
+def simulate( modules: Modules, sim_data: SimData, signal_interceptor: Callable[ [ str, bool, int ], Any ] = None ):
     signals: deque[ tuple[ str, bool, int ] ] = deque()
     signals.append( ("broadcaster", False, 0) )
     while signals:
         name, level, input_no = signals.popleft()
-        levels[ level ] += 1
+        if signal_interceptor: signal_interceptor( name, level, input_no )
         module = modules[ name ]
         match module.type:
             case "b":
@@ -86,7 +109,12 @@ def simulate( modules: Modules, sim_data: SimData, levels: dict[bool, int] ):
 
 
 def main():
-    helper.exec_tasks( prepare, task1, task2, helper.read_file( 'data/day23_20.in' ), 684125385, None )
+    helper.exec_tasks( prepare,
+                       task1,
+                       task2,
+                       helper.read_file( 'data/day23_20.in' ),
+                       684125385,
+                       225872806380073 )
 
 
 if __name__ == '__main__':
@@ -94,6 +122,3 @@ if __name__ == '__main__':
         main()
     except Exception as ex:
         helper.print_ex( ex )
-
-# %nd, %fx, %mc, %lf
-# broadcaster
