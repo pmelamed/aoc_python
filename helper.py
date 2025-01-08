@@ -12,6 +12,18 @@ CROSS_DIRS = ((0, -1), (1, 0), (0, 1), (-1, 0))
 X_DIRS = ((1, -1), (1, 1), (-1, 1), (-1, -1))
 STAR_DIRS = ((0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1))
 
+SYM_DIRS = {
+    ord( ">" ): (1, 0),
+    ord( "<" ): (-1, 0),
+    ord( "^" ): (0, -1),
+    ord( "v" ): (0, 1)
+}
+
+SYM_OBSTACLE = ord( "#" )
+SYM_PLANE = ord( "." )
+SYM_START = ord( "S" )
+SYM_END = ord( "E" )
+
 
 class Field[ DataT ]:
     cells: list[ list[ DataT ] ]
@@ -39,11 +51,8 @@ class Field[ DataT ]:
     def contains( self, pt: Coord ):
         return 0 <= pt[ 0 ] < self.width and 0 <= pt[ 1 ] < self.height
 
-    def filter(
-        self,
-        filter_fn: Callable[ [ int, int, DataT, Any ], bool ]
-        ) \
-            -> Iterable[ tuple[ int, int, DataT ] ]:
+    def filter( self,
+                filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) -> Iterable[ tuple[ int, int, DataT ] ]:
         return FieldFilterIterator( self, filter_fn )
 
     def find( self, filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) -> Optional[ Coord ]:
@@ -52,9 +61,9 @@ class Field[ DataT ]:
                 if filter_fn( x, y, self.cells[ y ][ x ], self ): return x, y
         return None
 
-    def dump(
-        self, cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ), delim: str = " "
-        ) -> str:
+    def dump( self,
+              cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ),
+              delim: str = " " ) -> str:
         strs = [ [ cell_str_f( x, y, self.cells[ y ][ x ] ) for x in range( self.width ) ]
                  for y in range( self.height ) ]
         cell_width = max( max( len( cell ) for cell in line ) for line in strs )
@@ -71,7 +80,7 @@ class FieldFilterIterator[ DataT ]:
         self,
         field: Field[ DataT ],
         filter_fn: Callable[ [ int, int, DataT, Field[ DataT ] ], bool ]
-        ):
+    ):
         self.field = field
         self.filter_fn = filter_fn
         self.x = self.y = 0
@@ -101,7 +110,7 @@ def field_from_input[ DataT, RawCellT ](
     lambda s: [ c for c in bytes( s, "UTF-8" ) ],
     cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
     cell_t: Callable[ [ RawCellT ], DataT ] = lambda a: a
-    ) -> Field[ DataT ]:
+) -> Field[ DataT ]:
     height = 0
     width = 0
     cells = [ ]
@@ -112,6 +121,10 @@ def field_from_input[ DataT, RawCellT ](
             cells.append( [ cell_t( cell ) for cell in line_cells if cell_filter( cell ) ] )
             height += 1
     return Field( width, height, cells )
+
+
+def field_chars_from_input( lines: Iterable[ str ] ) -> Field[ int ]:
+    return field_from_input( lines )
 
 
 def field_generate[ DataT ]( width: int, height: int, gen_f: Callable[ [ int, int ], DataT ] ) -> Field[ DataT ]:
@@ -134,7 +147,7 @@ def task_check[ DataT, ResultT: str | int ](
     func: Callable[ [ DataT ], ResultT ] | None,
     data: DataT,
     sample: ResultT
-    ):
+):
     start = datetime.datetime.now( datetime.timezone.utc )
     result = func( data )
     delta = int( (datetime.datetime.now( datetime.timezone.utc ) - start).total_seconds() * 1000 )
