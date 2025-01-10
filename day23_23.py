@@ -25,18 +25,19 @@ def find_longest_way( field: Field2D[ int ], respect_slopes: bool ) -> int:
     longest = 0
     target_graph, end_point_index = get_crosses_graph( field, respect_slopes )
     path: list[ tuple[ int, int ] ] = [ (0, 0) ]
-    visited: set[ int ] = { 0 }
+    visited: list[ bool ] = (end_point_index + 1) * [False]
+    visited[0] = True
     while path:
         pt, length = path.pop()
         if length == -1:
-            visited.discard( pt )
+            visited[pt ]= False
             continue
         if pt == end_point_index:
             longest = max( longest, length )
             continue
-        visited.add( pt )
+        visited[ pt ] = True
         path.append( (pt, -1) )
-        path.extend( [ (p, length + l) for p, l in target_graph[ pt ].items() if p not in visited ] )
+        path.extend( [ (p, length + l) for p, l in target_graph[ pt ].items() if not visited[p] ] )
     return longest
 
 
