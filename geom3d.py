@@ -1,6 +1,8 @@
+from functools import total_ordering
 from typing import Iterable
 
 
+@total_ordering
 class Coord3D:
     x: int
     y: int
@@ -19,6 +21,24 @@ class Coord3D:
 
     def __str__( self ):
         return f"{self.x},{self.y},{self.z}"
+
+    def __repr__( self ):
+        return f"({self.x},{self.y},{self.z})"
+
+    def __hash__( self ):
+        return (((self.z << 8) ^ self.y) << 8) ^ self.x
+
+    def __eq__( self, other ):
+        return self.x == other.x and self.y == other.y and self.z == other.z
+
+    def __lt__( self, other ):
+        if self.z == other.z:
+            if self.y == other.y:
+                return self.x < other.x
+            else:
+                return self.y < other.y
+        else:
+            return self.z < other.z
 
     def manhattan( self ):
         return self.x + self.y + self.z
