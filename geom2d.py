@@ -149,6 +149,13 @@ class Field2D[ DataT ]:
     def range( self ) -> Iterable[ tuple[ int, int ] ]:
         return itertools.product( range( self.width ), range( self.height ) )
 
+    def count_if( self, filter_fn: Callable[ [ int, int, DataT ], bool ] ) -> int:
+        result = 0
+        for y, line in enumerate( self.cells ):
+            for x, cell in enumerate( line ):
+                if filter_fn( x, y, cell ): result += 1
+        return result
+
     @classmethod
     def from_input[ DataT, RawCellT ](
         cls,
@@ -222,6 +229,11 @@ def field_equal_filter[ DataT ]( value: DataT ) -> Callable[ [ int, int, DataT ]
 def field_digit_cell_t() -> Callable[ [ int ], int ]:
     return lambda v: v - ord( '0' )
 
+
+CROSS_DIRS_2D = (Coord2D( 0, -1 ),
+                 Coord2D( 1, 0 ),
+                 Coord2D( 0, 1 ),
+                 Coord2D( -1, 0 ))
 
 SYM_UP = ord( "^" )
 SYM_LEFT = ord( "<" )
