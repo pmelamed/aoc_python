@@ -118,6 +118,15 @@ class Field2D[ DataT ]:
     def copy( self ):
         return Field2D( self.width, self.height, [ line.copy() for line in self.cells ] )
 
+    def tiles_copy( self, width_multiplier: int, height_multiplier: int ):
+        width = self.width
+        height = self.height
+        return Field2D.from_generate(
+            width * width_multiplier,
+            height * height_multiplier,
+            lambda pt: self[Coord2D( pt.x % width, pt.y % height ) ]
+        )
+
     def contains( self, pt: Coord2D ):
         return 0 <= pt.x < self.width and 0 <= pt.y < self.height
 

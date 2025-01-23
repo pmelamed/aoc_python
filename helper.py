@@ -148,9 +148,9 @@ def task_check[ DataT, ResultT: str | int ](
     data: DataT,
     sample: ResultT
 ):
-    start = datetime.datetime.now( datetime.timezone.utc )
+    start = now_utc()
     result = func( data )
-    delta = int( (datetime.datetime.now( datetime.timezone.utc ) - start).total_seconds() * 1000 )
+    delta = int( (now_utc() - start).total_seconds() * 1000 )
     if sample is None:
         print( f"\x1b[1;5;30;100m RESULT \x1b[0m - {result} \u231B {delta}" )
     else:
@@ -158,6 +158,10 @@ def task_check[ DataT, ResultT: str | int ](
             print( f"\x1b[1;5;30;42m   OK   \x1b[0m - {result} \u231B {delta}" )
         else:
             print( f"\x1b[1;5;30;41m  FAIL  \x1b[0m - {result} != {sample}" )
+
+
+def now_utc():
+    return datetime.datetime.now( datetime.timezone.utc )
 
 
 def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
@@ -236,3 +240,7 @@ def manhattan( pt1: Coord, pt2: Coord ) -> int:
 
 def field_rect( width: int, height: int ) -> Rect:
     return 0, 0, width, height
+
+
+def ignore_args( n: int, fn: Callable ):
+    return lambda *args: fn( *args[ n: ] )
