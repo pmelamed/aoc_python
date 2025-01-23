@@ -3,8 +3,8 @@ from typing import Iterable
 
 import helper
 from geom2d import Coord2D, CROSS_DIRS_2D, Field2D
-from helper import ignore_args, now_utc, SYM_OBSTACLE, SYM_PLANE, SYM_START
-from math_helper import ap_sum
+from helper import now_utc, SYM_OBSTACLE, SYM_PLANE, SYM_START
+from math_helper import progression_sum
 
 TASK2_STEPS = 26501365
 
@@ -39,16 +39,29 @@ PARTIALS_BOTTOM_ROW = [
 class Data:
     field: Field2D[ int ]
     start_pt: Coord2D
-    partials: Field2D[int]
+    partials: Field2D[ int ]
+    steps_to_fill: int
+    filled_even: int
+    filled_odd: int
+    filled_both: int
 
     def __init__( self,
                   lines: list[ str ] ):
-        self.field = Field2D.from_input( lines )
+        self.field = field = Field2D.from_input( lines )
         self.start_pt = self.field.find( lambda _x, _y, cell: cell == SYM_START )
         self.field[ self.start_pt ] = SYM_PLANE
+        filled, self.steps_to_fill = fill_field( field, Coord2D( field.width - 1, field.height // 2 ) )
+        self.filled_even = 0
+        self.filled_odd = 0
+        for x, y in filled.range():
+            crd = Coord2D( x, y )
+            if filled[ crd ]:
+                if (x + y) % 2 == 0:
+                    self.filled_even += 1
+                else:
+                    self.filled_odd += 1
+        self.filled_both = self.filled_even + self.filled_odd
         self.partials = simulate_bigger_sample_field( self.field, 2 )
-        print( "Partials:" )
-        print( self.partials.dump() )
 
 
 def task1( data: Data ) -> int:
@@ -59,58 +72,29 @@ def task2( data: Data, overall_steps: int ) -> int:
     # We assume that overall_steps is always odd as it is in the original task
     field = data.field
     width = field.width
-    height = field.height
-    filled, steps_to_fill = fill_field( field, Coord2D( width - 1, height // 2 ) )
-    filled_even = 0
-    filled_odd = 0
-    for x, y in filled.range():
-        crd = Coord2D( x, y )
-        if filled[ crd ]:
-            if (x + y) % 2 == 0:
-                filled_even += 1
-            else:
-                filled_odd += 1
-    filled_both = filled_even + filled_odd
-    print( f"""
-           Fill steps- {steps_to_fill}
-           Filled even - {filled_even}
-           Filled odd - {filled_odd}
-           Filled both - {filled_both}""" )
+    steps_to_fill = data.steps_to_fill
+    filled_even = data.filled_even
+    filled_odd = data.filled_odd
+    filled_both = data.filled_both
     partials = data.partials
     full_fields_distance = get_reach_steps( width,
                                             overall_steps,
                                             steps_to_fill )
-    filled_long_row = full_fields_distance // 2 * filled_both * 2 + filled_odd
-    if full_fields_distance % 2 == 1:
-        filled_long_row += 2 * filled_even
-
-    top_row = extract_field_sum( partials, PARTIALS_TOP_ROW )
+    filled_long_row = (full_fields_distance // 2 * filled_both + filled_even) * 2 + filled_odd
     row_above = filled_long_row - filled_both + extract_field_sum( partials, PARTIALS_ROW_ABOVE_EXT )
-    all_rows_above = ap_sum( first = row_above, delta = -filled_both, count = full_fields_distance )
-    long_row = filled_long_row + extract_field_sum( partials, PARTIALS_LONG_ROW_EXT )
     row_below = filled_long_row - filled_both + extract_field_sum( partials, PARTIALS_ROW_BELOW_EXT )
-    all_rows_below = ap_sum( first = row_below, delta = -filled_both, count = full_fields_distance )
-    bottom_row = extract_field_sum( partials, PARTIALS_BOTTOM_ROW )
-    print(f"""
-           top_row = {top_row}
-           row_above = {row_above}
-           long_row = {long_row}
-           row_below = {row_below}
-           bottom_row = {bottom_row}""")
-    return sum( [ top_row, all_rows_above, long_row, all_rows_below, bottom_row ] )
+    return sum( [
+        extract_field_sum( partials, PARTIALS_TOP_ROW ),
+        progression_sum( first = row_above, delta = -filled_both, count = full_fields_distance ),
+        filled_long_row + extract_field_sum( partials, PARTIALS_LONG_ROW_EXT ),
+        progression_sum( first = row_below, delta = -filled_both, count = full_fields_distance ),
+        extract_field_sum( partials, PARTIALS_BOTTOM_ROW ) ] )
 
 
-def simulate_steps( field: Field2D[ int ], start_pt: Coord2D, count: int, /, verbose = False ) -> set[ Coord2D ]:
+def simulate_steps( field: Field2D[ int ], start_pt: Coord2D, count: int ) -> set[ Coord2D ]:
     step: set[ Coord2D ] = { start_pt }
-    prev_time = helper.now_utc()
-    if verbose: print( f"Simulating {count} steps", end = "" )
     for step_idx in range( count ):
-        this_time = now_utc()
-        if verbose and (this_time - prev_time).total_seconds() >= 3.0:
-            print( f" ... {step_idx * 100 // count}%", end = "" )
-            prev_time = this_time
         step = simulate_step( field, step )
-    if verbose: print( " ... finished" )
     return step
 
 
@@ -122,13 +106,6 @@ def simulate_step( field: Field2D[ int ], current_step: set[ Coord2D ] ) -> set[
                 for p in current_step):
         next_step.update( pts )
     return next_step
-
-
-def dump_step( field: Field2D[ int ], current_step: set[ Coord2D ], diff: set[ Coord2D ] ):
-    fld = field.copy()
-    for pt in diff: fld[ pt ] = ord( '*' )
-    for pt in current_step: fld[ pt ] = ord( 'O' )
-    print( fld.dump( cell_str_f = ignore_args( 2, chr ), delim = "" ), end = "\n\n" )
 
 
 def fill_field( field: Field2D[ int ], start_pt: Coord2D ) -> tuple[ Field2D[ bool ], int ]:
@@ -163,8 +140,7 @@ def simulate_bigger_sample_field( src_field: Field2D[ int ], sample_coeff: int )
     result = Field2D.from_value( multiplier, multiplier, 0 )
     reached_pts = simulate_steps( src_field.tiles_copy( multiplier, multiplier ),
                                   Coord2D( steps + width, steps + width ),
-                                  steps,
-                                  verbose = True )
+                                  steps )
     for pt in reached_pts:
         result[ Coord2D( pt.x // width, pt.y // height ) ] += 1
     return result
@@ -175,7 +151,9 @@ def extract_field_sum( field: Field2D[ int ], coords: Iterable[ Coord2D ] ) -> i
 
 
 def main():
+    prep_start_time = now_utc()
     data = Data( helper.read_file( 'data/day23_21.in' ) )
+    print( f"Preparation \u231B {int( (now_utc() - prep_start_time).total_seconds() * 1000 )}" )
     helper.exec_task( None,
                       partial( task2, overall_steps = 327 ),
                       data,
@@ -189,7 +167,7 @@ def main():
                        partial( task2, overall_steps = TASK2_STEPS ),
                        data,
                        3542,
-                       None )
+                       593174122420825 )
 
 
 if __name__ == '__main__':
