@@ -1,28 +1,20 @@
 import re
-from collections import Counter, defaultdict, deque
+from collections import Counter, defaultdict
 
 from helper import exec_task, first, print_ex, read_file
 
 
-class Data:
-    graf: dict[ str, set[ str ] ]
-    links: list[ tuple[ str, str ] ]
-
-    def __init__( self, lines: [ str ] ):
-        graf: dict[ str, set[ str ] ] = defaultdict( set )
-        links: list[ tuple[ str, str ] ] = [ ]
-        for idx, line in enumerate( lines ):
-            src, *dst = re.split( r": | ", line )
-            for node in dst:
-                graf[ src ].add( node )
-                graf[ node ].add( src )
-                links.append( (src, node) )
-        self.graf = graf
-        self.links = links
+def prepare( lines: [ str ] ) -> dict[ str, set[ str ] ]:
+    graf: dict[ str, set[ str ] ] = defaultdict( set )
+    for idx, line in enumerate( lines ):
+        src, *dst = re.split( r": | ", line )
+        for node in dst:
+            graf[ src ].add( node )
+            graf[ node ].add( src )
+    return graf
 
 
-def task1( data: Data ) -> int:
-    graf = data.graf
+def task1( graf: dict[ str, set[ str ] ] ) -> int:
     links_counter: Counter[ str ] = Counter()
     init_node, init_links = first( graf.items() )
     group = { init_node }
@@ -37,25 +29,12 @@ def task1( data: Data ) -> int:
     return len( group ) * (len( graf ) - len( group ))
 
 
-def build_linked_group( graf: dict[ str, set[ str ] ], dropped: list[ tuple[ str, str ] ] ) -> int:
-    start_node = dropped[ 0 ][ 0 ]
-    queue: deque[ str ] = deque( [ start_node ] )
-    group: set[ str ] = { start_node }
-    while queue:
-        node = queue.popleft()
-        for nxt in graf[ node ] - group:
-            if nxt == dropped[ 0 ][ 1 ]: return -1
-            queue.append( nxt )
-            group.add( nxt )
-    return len( group )
-
-
 def main():
-    exec_task( Data,
+    exec_task( prepare,
                task1,
                read_file( 'data/day23_25.sample' ),
                54 )
-    exec_task( Data,
+    exec_task( prepare,
                task1,
                read_file( 'data/day23_25.in' ),
                603368 )
