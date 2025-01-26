@@ -164,6 +164,11 @@ def now_utc():
     return datetime.datetime.now( datetime.timezone.utc )
 
 
+def first[ _T ]( itr: Iterable[ _T ] ) -> Optional[ _T ]:
+    for v in itr: return v
+    return None
+
+
 def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
     prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
     task1_fn: Callable[ [ DataT ], ResultT1 ],
