@@ -124,7 +124,7 @@ class Field2D[ DataT ]:
         return Field2D.from_generate(
             width * width_multiplier,
             height * height_multiplier,
-            lambda pt: self[Coord2D( pt.x % width, pt.y % height ) ]
+            lambda pt: self[ Coord2D( pt.x % width, pt.y % height ) ]
         )
 
     def contains( self, pt: Coord2D ):
@@ -239,18 +239,24 @@ def field_digit_cell_t() -> Callable[ [ int ], int ]:
     return lambda v: v - ord( '0' )
 
 
-CROSS_DIRS_2D = (Coord2D( 0, -1 ),
-                 Coord2D( 1, 0 ),
-                 Coord2D( 0, 1 ),
-                 Coord2D( -1, 0 ))
+DIR_UP = Coord2D( 0, -1 )
+DIR_LEFT = Coord2D( -1, 0 )
+DIR_DOWN = Coord2D( 0, 1 )
+DIR_RIGHT = Coord2D( 1, 0 )
+
+CROSS_DIRS_2D = (DIR_UP,
+                 DIR_RIGHT,
+                 DIR_DOWN,
+                 DIR_LEFT)
 
 SYM_UP = ord( "^" )
 SYM_LEFT = ord( "<" )
 SYM_RIGHT = ord( ">" )
 SYM_DOWN = ord( "v" )
+
 SYM_DIRS_2D = {
-    SYM_RIGHT: Coord2D( 1, 0 ),
-    SYM_DOWN:  Coord2D( 0, 1 ),
-    SYM_LEFT:  Coord2D( -1, 0 ),
-    SYM_UP:    Coord2D( 0, -1 )
+    SYM_RIGHT: DIR_RIGHT,
+    SYM_DOWN:  DIR_DOWN,
+    SYM_LEFT:  DIR_LEFT,
+    SYM_UP:    DIR_UP
 }
