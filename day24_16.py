@@ -1,7 +1,9 @@
 from typing import Optional
 
-from helper import Coord, CROSS_DIRS, Direction, exec_tasks, Field, field_from_input, field_value, move_forward, \
-    print_ex, read_file, turn_ccw90, turn_cw90
+from helper import (
+    CROSS_DIRS, Coord, Direction, Field, exec_tasks, field_from_input, field_value, move_forward, print_ex, read_file,
+    turn_ccw90, turn_cw90
+)
 
 
 class WaveCell:
@@ -10,11 +12,13 @@ class WaveCell:
     points: int
     parent: Optional[ object ]
 
-    def __init__( self,
-                  coord: Coord,
-                  direction: Direction,
-                  points: int,
-                  parent: Optional[ object ] ):
+    def __init__(
+            self,
+            coord: Coord,
+            direction: Direction,
+            points: int,
+            parent: Optional[ object ]
+            ):
         self.coord = coord
         self.direction = direction
         self.points = points
@@ -27,10 +31,12 @@ class Data:
     end: Coord
     min_ways: list[ WaveCell ]
 
-    def __init__( self,
-                  field: Field[ int ],
-                  start: Coord,
-                  end: Coord ):
+    def __init__(
+            self,
+            field: Field[ int ],
+            start: Coord,
+            end: Coord
+            ):
         self.field = field
         self.start = start
         self.end = end
@@ -44,9 +50,9 @@ EMPTY = ord( '.' )
 
 DIR_CHARS = {
     (-1, 0): ord( '<' ),
-    (1, 0): ord( '>' ),
+    (1, 0) : ord( '>' ),
     (0, -1): ord( '^' ),
-    (0, 1): ord( 'v' )
+    (0, 1) : ord( 'v' )
 }
 
 
@@ -63,10 +69,13 @@ def task1( data: Data ) -> int:
     min_points = -1
     while wave:
         front = wave.pop()
-        if not is_lower_equal( front.points, min_points ): continue
-        if data.field[ front.coord ] == OBSTACLE: continue
+        if not is_lower_equal( front.points, min_points ):
+            continue
+        if data.field[ front.coord ] == OBSTACLE:
+            continue
         if data.field[ front.coord ] == END:
-            if front.points < min_points: data.min_ways.clear()
+            if front.points < min_points:
+                data.min_ways.clear()
             min_points = front.points
             data.min_ways.append( front )
             continue
@@ -74,20 +83,32 @@ def task1( data: Data ) -> int:
         if is_lower_equal( front.points, way_field[ front.coord ] ):
             way_field[ front.coord ] = front.points
             if front.coord != data.end:
-                wave.append( WaveCell( move_forward( front.coord, front.direction ),
-                                       front.direction,
-                                       front.points + 1,
-                                       front ) )
+                wave.append(
+                    WaveCell(
+                        move_forward( front.coord, front.direction ),
+                        front.direction,
+                        front.points + 1,
+                        front
+                        )
+                    )
                 direction = turn_cw90( front.direction )
-                wave.append( WaveCell( move_forward( front.coord, direction ),
-                                       direction,
-                                       front.points + 1001,
-                                       front ) )
+                wave.append(
+                    WaveCell(
+                        move_forward( front.coord, direction ),
+                        direction,
+                        front.points + 1001,
+                        front
+                        )
+                    )
                 direction = turn_ccw90( front.direction )
-                wave.append( WaveCell( move_forward( front.coord, direction ),
-                                       direction,
-                                       front.points + 1001,
-                                       front ) )
+                wave.append(
+                    WaveCell(
+                        move_forward( front.coord, direction ),
+                        direction,
+                        front.points + 1001,
+                        front
+                        )
+                    )
     return min_points
 
 

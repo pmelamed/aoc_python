@@ -2,9 +2,10 @@ from functools import partial
 from typing import Iterable
 
 import helper
-from geom2d import Coord2D, CROSS_DIRS_2D, Field2D
-from helper import now_utc, SYM_OBSTACLE, SYM_PLANE, SYM_START
+from geom2d import CROSS_DIRS_2D, Coord2D, Field2D
+from helper import SYM_OBSTACLE, SYM_PLANE, SYM_START, now_utc
 from math_helper import progression_sum
+
 
 TASK2_STEPS = 26501365
 
@@ -45,8 +46,10 @@ class Data:
     filled_odd: int
     filled_both: int
 
-    def __init__( self,
-                  lines: list[ str ] ):
+    def __init__(
+            self,
+            lines: list[ str ]
+            ):
         self.field = field = Field2D.from_input( lines )
         self.start_pt = self.field.find( lambda _x, _y, cell: cell == SYM_START )
         self.field[ self.start_pt ] = SYM_PLANE
@@ -77,18 +80,23 @@ def task2( data: Data, overall_steps: int ) -> int:
     filled_odd = data.filled_odd
     filled_both = data.filled_both
     partials = data.partials
-    full_fields_distance = get_reach_steps( width,
-                                            overall_steps,
-                                            steps_to_fill )
+    full_fields_distance = get_reach_steps(
+        width,
+        overall_steps,
+        steps_to_fill
+        )
     filled_long_row = (full_fields_distance // 2 * filled_both + filled_even) * 2 + filled_odd
     row_above = filled_long_row - filled_both + extract_field_sum( partials, PARTIALS_ROW_ABOVE_EXT )
     row_below = filled_long_row - filled_both + extract_field_sum( partials, PARTIALS_ROW_BELOW_EXT )
-    return sum( [
-        extract_field_sum( partials, PARTIALS_TOP_ROW ),
-        progression_sum( first = row_above, delta = -filled_both, count = full_fields_distance ),
-        filled_long_row + extract_field_sum( partials, PARTIALS_LONG_ROW_EXT ),
-        progression_sum( first = row_below, delta = -filled_both, count = full_fields_distance ),
-        extract_field_sum( partials, PARTIALS_BOTTOM_ROW ) ] )
+    return sum(
+            [
+                extract_field_sum( partials, PARTIALS_TOP_ROW ),
+                progression_sum( first = row_above, delta = -filled_both, count = full_fields_distance ),
+                filled_long_row + extract_field_sum( partials, PARTIALS_LONG_ROW_EXT ),
+                progression_sum( first = row_below, delta = -filled_both, count = full_fields_distance ),
+                extract_field_sum( partials, PARTIALS_BOTTOM_ROW )
+            ]
+    )
 
 
 def simulate_steps( field: Field2D[ int ], start_pt: Coord2D, count: int ) -> set[ Coord2D ]:
@@ -138,9 +146,11 @@ def simulate_bigger_sample_field( src_field: Field2D[ int ], sample_coeff: int )
     steps = sample_coeff * width + width // 2
     multiplier = sample_coeff * 2 + 3
     result = Field2D.from_value( multiplier, multiplier, 0 )
-    reached_pts = simulate_steps( src_field.tiles_copy( multiplier, multiplier ),
-                                  Coord2D( steps + width, steps + width ),
-                                  steps )
+    reached_pts = simulate_steps(
+        src_field.tiles_copy( multiplier, multiplier ),
+        Coord2D( steps + width, steps + width ),
+        steps
+        )
     for pt in reached_pts:
         result[ Coord2D( pt.x // width, pt.y // height ) ] += 1
     return result
@@ -154,20 +164,26 @@ def main():
     prep_start_time = now_utc()
     data = Data( helper.read_file( 'data/day23_21.in' ) )
     print( f"Preparation \u231B {int( (now_utc() - prep_start_time).total_seconds() * 1000 )}" )
-    helper.exec_task( None,
-                      partial( task2, overall_steps = 327 ),
-                      data,
-                      91055 )
-    helper.exec_task( None,
-                      partial( task2, overall_steps = 589 ),
-                      data,
-                      294337 )
-    helper.exec_tasks( None,
-                       task1,
-                       partial( task2, overall_steps = TASK2_STEPS ),
-                       data,
-                       3542,
-                       593174122420825 )
+    helper.exec_task(
+        None,
+        partial( task2, overall_steps = 327 ),
+        data,
+        91055
+        )
+    helper.exec_task(
+        None,
+        partial( task2, overall_steps = 589 ),
+        data,
+        294337
+        )
+    helper.exec_tasks(
+        None,
+        task1,
+        partial( task2, overall_steps = TASK2_STEPS ),
+        data,
+        3542,
+        593174122420825
+        )
 
 
 if __name__ == '__main__':

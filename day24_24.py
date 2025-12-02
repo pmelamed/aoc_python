@@ -3,9 +3,10 @@ from typing import Optional
 
 from helper import exec_task, exec_tasks, print_ex, read_file
 
+
 OPERATIONS = {
     "AND": lambda in1, in2: in1 & in2,
-    "OR":  lambda in1, in2: in1 | in2,
+    "OR" : lambda in1, in2: in1 | in2,
     "XOR": lambda in1, in2: in1 ^ in2
 }
 
@@ -15,11 +16,13 @@ class Gate:
     name: str
     op_name: str
 
-    def __init__( self,
-                  in1: str,
-                  in2: str,
-                  name: str,
-                  op_name: str ):
+    def __init__(
+            self,
+            in1: str,
+            in2: str,
+            name: str,
+            op_name: str
+            ):
         self.ins = { in1, in2 }
         self.name = name
         self.op_name = op_name
@@ -52,7 +55,8 @@ class Data:
             gate = gates_fifo.pop( 0 )
             self.ordered.append( gate )
             for input_pin in gate.ins:
-                if input_pin[ 0 ] != "x" and input_pin[ 0 ] != "y": gates_fifo.append( self.gates[ input_pin ] )
+                if input_pin[ 0 ] != "x" and input_pin[ 0 ] != "y":
+                    gates_fifo.append( self.gates[ input_pin ] )
         self.ordered.reverse()
 
 
@@ -74,40 +78,53 @@ def task2( data: Data ) -> str:
     return ",".join( sorted( not_found ) )
 
 
-def fill_section( local_sum: Gate,
-                  carry_or: Gate,
-                  gates: dict[ str, Gate ],
-                  index: int,
-                  not_found: set[ str ] ) -> tuple[Gate, Gate]:
-    result_local_sum = find_gate( gates,
-                                  "XOR",
-                                  gate_name( "x", index ),
-                                  gate_name( "y", index ),
-                                  not_found )
-    carry_and_direct = find_gate( gates,
-                                  "AND",
-                                  gate_name( "x", index - 1 ),
-                                  gate_name( "y", index - 1 ),
-                                  not_found )
-    carry_and_indirect = find_gate( gates,
-                                    "AND",
-                                    local_sum.name,
-                                    carry_or.name,
-                                    not_found )
-    result_carry_or = find_gate( gates,
-                                 "OR",
-                                 carry_and_direct.name,
-                                 carry_and_indirect.name,
-                                 not_found )
+def fill_section(
+        local_sum: Gate,
+        carry_or: Gate,
+        gates: dict[ str, Gate ],
+        index: int,
+        not_found: set[ str ]
+        ) -> tuple[ Gate, Gate ]:
+    result_local_sum = find_gate(
+        gates,
+        "XOR",
+        gate_name( "x", index ),
+        gate_name( "y", index ),
+        not_found
+        )
+    carry_and_direct = find_gate(
+        gates,
+        "AND",
+        gate_name( "x", index - 1 ),
+        gate_name( "y", index - 1 ),
+        not_found
+        )
+    carry_and_indirect = find_gate(
+        gates,
+        "AND",
+        local_sum.name,
+        carry_or.name,
+        not_found
+        )
+    result_carry_or = find_gate(
+        gates,
+        "OR",
+        carry_and_direct.name,
+        carry_and_indirect.name,
+        not_found
+        )
     find_gate( gates, "XOR", result_local_sum.name, result_carry_or.name, not_found )
     return result_local_sum, result_carry_or
 
 
 def find_gate( gates: dict[ str, Gate ], op_name: str, in1: str, in2: str, not_found: set[ str ] ) -> Gate:
     zipped = ((match_gate( gate, op_name, in1, in2 ), gate) for gate in gates.values())
-    pairs = sorted( ((mismatch, gate) for mismatch, gate in zipped if mismatch is not None and len( mismatch ) < 4),
-                    key = lambda pair: len( pair[ 0 ] ) )
-    if not pairs: raise RuntimeError( f"Gate not found {op_name}( {in1}, {in2} )" )
+    pairs = sorted(
+            ((mismatch, gate) for mismatch, gate in zipped if mismatch is not None and len( mismatch ) < 4),
+            key = lambda pair: len( pair[ 0 ] )
+            )
+    if not pairs:
+        raise RuntimeError( f"Gate not found {op_name}( {in1}, {in2} )" )
     mismatch, gate = pairs[ 0 ]
     not_found.update( mismatch )
     return gate
@@ -123,18 +140,18 @@ def gate_name( prefix: str, index: int ):
 
 def main():
     exec_task(
-        Data,
-        task1,
-        read_file( 'data/day24_24.sample' ),
-        2024
+            Data,
+            task1,
+            read_file( 'data/day24_24.sample' ),
+            2024
     )
     exec_tasks(
-        Data,
-        task1,
-        task2,
-        read_file( 'data/day24_24.in' ),
-        56939028423824,
-        "frn,gmq,vtj,wnf,wtt,z05,z21,z39"
+            Data,
+            task1,
+            task2,
+            read_file( 'data/day24_24.in' ),
+            56939028423824,
+            "frn,gmq,vtj,wnf,wtt,z05,z21,z39"
     )
 
 

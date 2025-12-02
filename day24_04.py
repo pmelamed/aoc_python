@@ -5,20 +5,26 @@ from helper import STAR_DIRS
 def task1( lines: list[ str ] ) -> int:
     y_len = len( lines )
     x_len = len( lines[ 0 ] )
-    return sum( [ check_range( lines,
-                               max( 0, -dx * 4 - 1 ), min( x_len, x_len - dx * 4 + 1 ),
-                               max( 0, -dy * 4 - 1 ), min( y_len, y_len - dy * 4 + 1 ),
-                               dx, dy )
-                  for dx, dy in STAR_DIRS ] )
+    return sum(
+            [ check_range(
+                lines,
+                max( 0, -dx * 4 - 1 ), min( x_len, x_len - dx * 4 + 1 ),
+                max( 0, -dy * 4 - 1 ), min( y_len, y_len - dy * 4 + 1 ),
+                dx, dy
+                )
+              for dx, dy in STAR_DIRS ]
+            )
 
 
 def task2( lines: list[ str ] ) -> int:
-    return len( [ 1 \
-                  for y in range( 1, len( lines ) - 1 ) \
-                  for x in range( 1, len( lines[ 0 ] ) - 1 ) \
-                  if lines[ y ][ x ] == "A" and \
-                  check_line( lines[ y - 1 ][ x - 1 ], lines[ y + 1 ][ x + 1 ] ) and \
-                  check_line( lines[ y - 1 ][ x + 1 ], lines[ y + 1 ][ x - 1 ] ) ] )
+    return len(
+            [ 1 \
+              for y in range( 1, len( lines ) - 1 ) \
+              for x in range( 1, len( lines[ 0 ] ) - 1 ) \
+              if lines[ y ][ x ] == "A" and \
+              check_line( lines[ y - 1 ][ x - 1 ], lines[ y + 1 ][ x + 1 ] ) and \
+              check_line( lines[ y - 1 ][ x + 1 ], lines[ y + 1 ][ x - 1 ] ) ]
+            )
 
 
 def check_range( lines: list[ str ], x_from: int, x_to: int, y_from: int, y_to: int, dx: int, dy: int ) -> int:

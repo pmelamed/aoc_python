@@ -3,6 +3,7 @@ import re
 
 from helper import exec_tasks, print_ex, read_file
 
+
 type Case = tuple[ int, int, int, int, int, int ]
 type Data = list[ Case ]
 
@@ -16,8 +17,10 @@ def task1( data: Data ) -> int:
 
 
 def task2( data: Data ) -> int:
-    return sum( play_case( (ax, ay, bx, by, px + 10000000000000, py + 10000000000000) )
-                for ax, ay, bx, by, px, py in data )
+    return sum(
+            play_case( (ax, ay, bx, by, px + 10000000000000, py + 10000000000000) )
+            for ax, ay, bx, by, px, py in data
+            )
 
 
 def parse_case( lines: tuple[ str, ... ] ) -> Case:

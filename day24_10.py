@@ -1,29 +1,35 @@
 from collections import defaultdict
 
 import helper
-from helper import Coord, CROSS_DIRS, exec_tasks, Field, field_equal_filter, move_forward, print_ex, read_file
+from helper import CROSS_DIRS, Coord, Field, exec_tasks, field_equal_filter, move_forward, print_ex, read_file
 
 
 class Data:
     field: Field[ int ]
 
-    def __init__( self,
-                  field: Field[ int ] ):
+    def __init__(
+            self,
+            field: Field[ int ]
+            ):
         self.field = field
 
 
 def prepare( lines: list[ str ] ) -> Data:
-    return Data( helper.field_from_input( lines, cell_t=lambda c: c - ord( '0' ) ) )
+    return Data( helper.field_from_input( lines, cell_t = lambda c: c - ord( '0' ) ) )
 
 
 def task1( data: Data ) -> int:
-    return sum( (track_trails( data, (x, y) )
-                 for x, y, _ in data.field.filter( field_equal_filter( 0 ) )) )
+    return sum(
+            (track_trails( data, (x, y) )
+             for x, y, _ in data.field.filter( field_equal_filter( 0 ) ))
+            )
 
 
 def task2( data: Data ) -> int:
-    return sum( (track_distinct_trails( data, (x, y) )
-                 for x, y, _ in data.field.filter( field_equal_filter( 0 ) )) )
+    return sum(
+            (track_distinct_trails( data, (x, y) )
+             for x, y, _ in data.field.filter( field_equal_filter( 0 ) ))
+            )
 
 
 def track_trails( data: Data, pt: Coord ) -> int:

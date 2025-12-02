@@ -1,8 +1,10 @@
 import functools
 from collections import defaultdict
 
-from helper import Coord, CROSS_DIRS, exec_tasks, Field, field_from_input, manhattan, move_forward, print_ex, \
-    read_file
+from helper import (
+    CROSS_DIRS, Coord, Field, exec_tasks, field_from_input, manhattan, move_forward, print_ex, read_file
+)
+
 
 EMPTY = ord( "." )
 OBSTACLE = ord( "#" )
@@ -17,9 +19,9 @@ class Data:
     way: list[ Coord ]
 
     def __init__(
-        self,
-        field: Field[ int ],
-        way: list[ Coord ]
+            self,
+            field: Field[ int ],
+            way: list[ Coord ]
     ):
         self.field = field
         self.way = way
@@ -67,20 +69,20 @@ def task2( data: Data, min_save: int ) -> int:
 
 def main():
     exec_tasks(
-        prepare,
-        functools.partial( task1, min_save = 10 ),
-        functools.partial( task2, min_save = 50 ),
-        read_file( 'data/day24_20.sample' ),
-        10,
-        285
+            prepare,
+            functools.partial( task1, min_save = 10 ),
+            functools.partial( task2, min_save = 50 ),
+            read_file( 'data/day24_20.sample' ),
+            10,
+            285
     )
     exec_tasks(
-        prepare,
-        functools.partial( task1, min_save = 100 ),
-        functools.partial( task2, min_save = 100 ),
-        read_file( 'data/day24_20.in' ),
-        1441,
-        1021490
+            prepare,
+            functools.partial( task1, min_save = 100 ),
+            functools.partial( task2, min_save = 100 ),
+            read_file( 'data/day24_20.in' ),
+            1441,
+            1021490
     )
 
 

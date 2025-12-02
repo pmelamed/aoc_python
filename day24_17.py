@@ -15,8 +15,10 @@ class Computer:
         self.init_regs = regs
 
     def combo_arg( self, arg: int ):
-        if 0 <= arg <= 3: return arg
-        if 4 <= arg <= 6: return self.regs[ arg - 4 ]
+        if 0 <= arg <= 3:
+            return arg
+        if 4 <= arg <= 6:
+            return self.regs[ arg - 4 ]
         raise NotImplemented( "Combo operand code 7 not supported" )
 
     def exec_op( self ):
@@ -31,7 +33,8 @@ class Computer:
             case 2:
                 self.regs[ 1 ] = self.combo_arg( arg ) % 8
             case 3:
-                if self.regs[ 0 ] != 0: self.iptr = arg
+                if self.regs[ 0 ] != 0:
+                    self.iptr = arg
             case 4:
                 self.regs[ 1 ] = self.regs[ 1 ] ^ self.regs[ 2 ]
             case 5:
@@ -48,22 +51,27 @@ class Computer:
         self.iptr = 0
         self.regs = self.init_regs.copy()
         self.output = ""
-        if a is not None: self.regs[ 0 ] = a
+        if a is not None:
+            self.regs[ 0 ] = a
 
     def exec( self, a: Optional[ int ] = None ) -> str:
         self.reset( a )
-        while not self.is_halted(): self.exec_op()
+        while not self.is_halted():
+            self.exec_op()
         return self.output[ 1: ]
 
     def get_first_output( self, a: int ) -> str:
         self.reset( a )
-        while len( self.output ) == 0 and not self.is_halted(): self.exec_op()
+        while len( self.output ) == 0 and not self.is_halted():
+            self.exec_op()
         return self.output[ 1: ]
 
 
 def prepare( lines: list[ str ] ) -> Computer:
-    return Computer( [ int( op ) for op in lines[ 4 ][ 9: ].split( "," ) ],
-                     [ int( line[ 12: ] ) for line in lines[ :3 ] ] )
+    return Computer(
+            [ int( op ) for op in lines[ 4 ][ 9: ].split( "," ) ],
+            [ int( line[ 12: ] ) for line in lines[ :3 ] ]
+            )
 
 
 def task1( pc: Computer ) -> str:
@@ -86,7 +94,8 @@ def task2( pc: Computer ) -> int:
 
 
 def find_min_a( pc: Computer, digit: int, base_a: int ) -> Optional[ int ]:
-    if digit == len( pc.code ): return base_a
+    if digit == len( pc.code ):
+        return base_a
     for modulus in range( 1 if digit == 0 else 0, 8 ):
         a = base_a * 8 + modulus
         # output = int( check_modulus_a( a ) )
@@ -94,7 +103,8 @@ def find_min_a( pc: Computer, digit: int, base_a: int ) -> Optional[ int ]:
         expected = pc.code[ -digit - 1 ]
         if output == expected:
             result = find_min_a( pc, digit + 1, a )
-            if result is not None: return result
+            if result is not None:
+                return result
     return None
 
 
@@ -109,10 +119,12 @@ def check_modulus_a( a: int ) -> int:
 
 def main():
     exec_task( prepare, task1, read_file( 'data/day24_17.sample' ), "4,6,3,5,6,3,5,2,1,0" )
-    exec_tasks( prepare, task1, task2,
-                read_file( 'data/day24_17.in' ),
-                "2,3,6,2,1,6,1,2,1",
-                90938893795561 )
+    exec_tasks(
+        prepare, task1, task2,
+        read_file( 'data/day24_17.in' ),
+        "2,3,6,2,1,6,1,2,1",
+        90938893795561
+        )
 
 
 if __name__ == '__main__':

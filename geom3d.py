@@ -86,21 +86,29 @@ class Rect3D:
     @classmethod
     def from_corners( cls, a: Coord3D, b: Coord3D, /, *, sort = False ):
         if sort:
-            return Rect3D( Coord3D.from_coords( min( a.x, b.x ), min( a.y, b.y ), min( a.z, b.z ) ),
-                           Coord3D.from_coords( max( a.x, b.x ), max( a.y, b.y ), max( a.z, b.z ) ) )
+            return Rect3D(
+                Coord3D.from_coords( min( a.x, b.x ), min( a.y, b.y ), min( a.z, b.z ) ),
+                Coord3D.from_coords( max( a.x, b.x ), max( a.y, b.y ), max( a.z, b.z ) )
+                )
         else:
-            return Rect3D( Coord3D.from_coords( a.x, a.y, a.z ),
-                           Coord3D.from_coords( b.x, b.y, b.z ) )
+            return Rect3D(
+                Coord3D.from_coords( a.x, a.y, a.z ),
+                Coord3D.from_coords( b.x, b.y, b.z )
+                )
 
     @classmethod
     def from_coords( cls, x1: int, y1: int, z1: int, x2: int, y2: int, z2: int, /, *, sort = False ):
-        return Rect3D.from_corners( Coord3D.from_coords( x1, y1, z1 ),
-                                    Coord3D.from_coords( x2, y2, z2 ),
-                                    sort = sort )
+        return Rect3D.from_corners(
+            Coord3D.from_coords( x1, y1, z1 ),
+            Coord3D.from_coords( x2, y2, z2 ),
+            sort = sort
+            )
 
     @classmethod
     def from_coords_list( cls, coords: Iterable[ int ], /, *, sort = False ):
         ts = iter( coords )
-        return Rect3D.from_corners( Coord3D.from_coords( next( ts ), next( ts ), next( ts ) ),
-                                    Coord3D.from_coords( next( ts ), next( ts ), next( ts ) ),
-                                    sort = sort )
+        return Rect3D.from_corners(
+            Coord3D.from_coords( next( ts ), next( ts ), next( ts ) ),
+            Coord3D.from_coords( next( ts ), next( ts ), next( ts ) ),
+            sort = sort
+            )

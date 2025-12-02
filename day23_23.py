@@ -1,7 +1,8 @@
 import functools
 
 from geom2d import Coord2D, Field2D, SYM_DIRS_2D
-from helper import exec_tasks, print_ex, read_file, SYM_DIRS, SYM_OBSTACLE
+from helper import SYM_DIRS, SYM_OBSTACLE, exec_tasks, print_ex, read_file
+
 
 START_POINT = Coord2D.from_coords( 1, 0 )
 
@@ -52,10 +53,14 @@ def get_crosses_graph( field, respect_slopes ):
     crosses_map: dict[ Coord2D, int ] = dict( (coord, index) for index, coord in enumerate( crosses ) )
     target_graph: dict[ int, dict[ int, int ] ] = dict()
     for index in range( end_point_index ):
-        target_graph[ index ] = dict( (crosses_map[ coord ], length)
-                                      for coord, length in find_nearest_crosses( field,
-                                                                                 neighbors,
-                                                                                 crosses[ index ] ) )
+        target_graph[ index ] = dict(
+                (crosses_map[ coord ], length)
+                for coord, length in find_nearest_crosses(
+                    field,
+                    neighbors,
+                    crosses[ index ]
+                    )
+                )
     return target_graph, end_point_index
 
 
@@ -63,9 +68,11 @@ def get_end_point( field: Field2D[ int ] ):
     return Coord2D( field.width - 2, field.height - 1 )
 
 
-def find_nearest_crosses( field: Field2D[ int ],
-                          neighbors: Field2D[ list[ Coord2D ] ],
-                          start_pt: Coord2D ) -> list[ tuple[ Coord2D, int ] ]:
+def find_nearest_crosses(
+        field: Field2D[ int ],
+        neighbors: Field2D[ list[ Coord2D ] ],
+        start_pt: Coord2D
+        ) -> list[ tuple[ Coord2D, int ] ]:
     result: list[ tuple[ Coord2D, int ] ] = [ ]
     end_point = get_end_point( field )
     path: list[ tuple[ Coord2D, int ] ] = [ (pt, 0) for pt in neighbors[ start_pt ] ]
@@ -76,7 +83,8 @@ def find_nearest_crosses( field: Field2D[ int ],
         if length == -1:
             visited[ pt ] = False
             continue
-        if pt == START_POINT: continue
+        if pt == START_POINT:
+            continue
         if len( neighbors[ pt ] ) > 2 or pt == end_point:
             result.append( (pt, length + 1) )
             continue
@@ -87,16 +95,21 @@ def find_nearest_crosses( field: Field2D[ int ],
 
 
 def generate_neighbours( field: Field2D[ int ], respect_slopes: bool ) -> Field2D[ list[ Coord2D ] ]:
-    return Field2D.from_generate( field.width,
-                                  field.height,
-                                  functools.partial( get_cell_neighbors,
-                                                     field = field,
-                                                     respect_slopes = respect_slopes ) )
+    return Field2D.from_generate(
+        field.width,
+        field.height,
+        functools.partial(
+            get_cell_neighbors,
+            field = field,
+            respect_slopes = respect_slopes
+            )
+        )
 
 
 def get_cell_neighbors( pt: Coord2D, field: Field2D[ int ], respect_slopes: bool ) -> list[ Coord2D ]:
     cell = field[ pt ]
-    if cell == SYM_OBSTACLE: return [ ]
+    if cell == SYM_OBSTACLE:
+        return [ ]
     candidates = ([ pt + SYM_DIRS_2D[ cell ] ]
                   if respect_slopes and cell in SYM_DIRS
                   else [ pt + d for d in SYM_DIRS_2D.values() ])
@@ -104,18 +117,22 @@ def get_cell_neighbors( pt: Coord2D, field: Field2D[ int ], respect_slopes: bool
 
 
 def main():
-    exec_tasks( Data,
-                task1,
-                task2,
-                read_file( 'data/day23_23.sample' ),
-                94,
-                154 )
-    exec_tasks( Data,
-                task1,
-                task2,
-                read_file( 'data/day23_23.in' ),
-                2050,
-                6262 )
+    exec_tasks(
+        Data,
+        task1,
+        task2,
+        read_file( 'data/day23_23.sample' ),
+        94,
+        154
+        )
+    exec_tasks(
+        Data,
+        task1,
+        task2,
+        read_file( 'data/day23_23.in' ),
+        2050,
+        6262
+        )
 
 
 if __name__ == '__main__':

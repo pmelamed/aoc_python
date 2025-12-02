@@ -2,6 +2,7 @@ from collections.abc import Iterable
 
 import helper
 
+
 OP_ADD: int = 0
 OP_MUL: int = 1
 
@@ -9,8 +10,10 @@ OP_MUL: int = 1
 class Data:
     lines: [ tuple[ int, list[ int ] ] ]
 
-    def __init__( self,
-                  lines: [ int, list[ int ] ] ):
+    def __init__(
+            self,
+            lines: [ int, list[ int ] ]
+            ):
         self.lines = lines
 
 
@@ -33,7 +36,8 @@ def task2( data: Data ) -> int:
 def can_be_calculated( args: list[ int ], expected: int, max_op: int ) -> bool:
     ops: list[ int ] = [ 0 for _ in range( len( args ) - 1 ) ]
     while ops[ -1 ] < max_op:
-        if calculate( args, ops ) == expected: return True
+        if calculate( args, ops ) == expected:
+            return True
         index = 0
         ops[ 0 ] += 1
         while index < len( ops ) - 1 and ops[ index ] == max_op:

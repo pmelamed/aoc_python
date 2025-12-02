@@ -31,7 +31,8 @@ def try_assemble( design: str, towels: list[ str ] ) -> bool:
     for towel in towels:
         design_len = len( design )
         towel_len = len( towel )
-        if design_len < towel_len: continue
+        if design_len < towel_len:
+            continue
         if design_len == towel_len:
             if design == towel:
                 return True
@@ -44,13 +45,16 @@ def try_assemble( design: str, towels: list[ str ] ) -> bool:
 
 
 def count_assembles( combinations: dict[ str, int ], design: str, towels: list[ str ] ) -> int:
-    if design == "": return 1
-    if design in combinations: return combinations[ design ]
+    if design == "":
+        return 1
+    if design in combinations:
+        return combinations[ design ]
     result = 0
     design_len = len( design )
     for towel in towels:
         towel_len = len( towel )
-        if design_len < towel_len: break
+        if design_len < towel_len:
+            break
         if design[ :towel_len ] == towel:
             result += count_assembles( combinations, design[ towel_len: ], towels )
     combinations[ design ] = result
@@ -59,20 +63,20 @@ def count_assembles( combinations: dict[ str, int ], design: str, towels: list[ 
 
 def main():
     exec_tasks(
-        prepare,
-        task1,
-        task2,
-        read_file( 'data/day24_19.sample' ),
-        6,
-        16
+            prepare,
+            task1,
+            task2,
+            read_file( 'data/day24_19.sample' ),
+            6,
+            16
     )
     exec_tasks(
-        prepare,
-        task1,
-        task2,
-        read_file( 'data/day24_19.in' ),
-        263,
-        723524534506343
+            prepare,
+            task1,
+            task2,
+            read_file( 'data/day24_19.in' ),
+            263,
+            723524534506343
     )
 
 

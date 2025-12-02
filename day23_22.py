@@ -7,6 +7,7 @@ import helper
 from geom3d import Rect3D
 from helper import field_value
 
+
 RE_BOX = r"([0-9]+),([0-9]+),([0-9]+)~([0-9]+),([0-9]+),([0-9]+)"
 
 type Boxes = list[ Rect3D ]
@@ -26,9 +27,13 @@ class Data:
         height = max( box.b.y for box in boxes ) + 1
         top_view: helper.Field[ CellInfo ] = field_value( width, height, CellInfo( box = -1, height = 0 ) )
         for index, box in enumerate( boxes ):
-            max_height = max( top_view[ cell ].height
-                              for cell in product( range( box.a.x, box.b.x + 1 ),
-                                                   range( box.a.y, box.b.y + 1 ) ) )
+            max_height = max(
+                    top_view[ cell ].height
+                    for cell in product(
+                        range( box.a.x, box.b.x + 1 ),
+                        range( box.a.y, box.b.y + 1 )
+                        )
+                    )
             new_height = max_height + box.b.z - box.a.z + 1
             supports.append( set() )
             supported.append( set() )
@@ -44,8 +49,10 @@ class Data:
 
 
 def task1( data: Data ) -> int:
-    return sum( 1 for box_index in range( len( data.boxes ) ) if
-                all_supported( data.supports[ box_index ], data.supported ) )
+    return sum(
+            1 for box_index in range( len( data.boxes ) ) if
+            all_supported( data.supports[ box_index ], data.supported )
+            )
 
 
 def task2( data: Data ) -> int:
@@ -61,8 +68,10 @@ def task2( data: Data ) -> int:
 
 
 def parse_box( line: str ) -> Rect3D:
-    return Rect3D.from_coords_list( map( int, re.findall( RE_BOX, line )[ 0 ] ),
-                                    sort = True )
+    return Rect3D.from_coords_list(
+        map( int, re.findall( RE_BOX, line )[ 0 ] ),
+        sort = True
+        )
 
 
 def all_supported( supported_boxes: Iterable[ int ], supported_by: list[ set[ int ] ] ) -> bool:
@@ -70,18 +79,22 @@ def all_supported( supported_boxes: Iterable[ int ], supported_by: list[ set[ in
 
 
 def main():
-    helper.exec_tasks( Data,
-                       task1,
-                       task2,
-                       helper.read_file( 'data/day23_22.sample' ),
-                       5,
-                       7 )
-    helper.exec_tasks( Data,
-                       task1,
-                       task2,
-                       helper.read_file( 'data/day23_22.in' ),
-                       389,
-                       70609 )
+    helper.exec_tasks(
+        Data,
+        task1,
+        task2,
+        helper.read_file( 'data/day23_22.sample' ),
+        5,
+        7
+        )
+    helper.exec_tasks(
+        Data,
+        task1,
+        task2,
+        helper.read_file( 'data/day23_22.in' ),
+        389,
+        70609
+        )
 
 
 if __name__ == '__main__':

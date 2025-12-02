@@ -75,24 +75,32 @@ class Rect2D:
     @classmethod
     def from_corners( cls, a: Coord2D, b: Coord2D, /, *, sort = False ):
         if sort:
-            return Rect2D( Coord2D.from_coords( min( a.x, b.x ), min( a.y, b.y ) ),
-                           Coord2D.from_coords( max( a.x, b.x ), max( a.y, b.y ) ) )
+            return Rect2D(
+                Coord2D.from_coords( min( a.x, b.x ), min( a.y, b.y ) ),
+                Coord2D.from_coords( max( a.x, b.x ), max( a.y, b.y ) )
+                )
         else:
-            return Rect2D( Coord2D.from_coords( a.x, a.y ),
-                           Coord2D.from_coords( b.x, b.y ) )
+            return Rect2D(
+                Coord2D.from_coords( a.x, a.y ),
+                Coord2D.from_coords( b.x, b.y )
+                )
 
     @classmethod
     def from_coords( cls, x1: int, y1: int, x2: int, y2: int, /, *, sort = False ):
-        return Rect2D.from_corners( Coord2D.from_coords( x1, y1 ),
-                                    Coord2D.from_coords( x2, y2 ),
-                                    sort = sort )
+        return Rect2D.from_corners(
+            Coord2D.from_coords( x1, y1 ),
+            Coord2D.from_coords( x2, y2 ),
+            sort = sort
+            )
 
     @classmethod
     def from_coords_list( cls, coords: Iterable[ int ], /, *, sort = False ):
         ts = iter( coords )
-        return Rect2D.from_corners( Coord2D.from_coords( next( ts ), next( ts ) ),
-                                    Coord2D.from_coords( next( ts ), next( ts ) ),
-                                    sort = sort )
+        return Rect2D.from_corners(
+            Coord2D.from_coords( next( ts ), next( ts ) ),
+            Coord2D.from_coords( next( ts ), next( ts ) ),
+            sort = sort
+            )
 
 
 class Field2D[ DataT ]:
@@ -122,24 +130,25 @@ class Field2D[ DataT ]:
         width = self.width
         height = self.height
         return Field2D.from_generate(
-            width * width_multiplier,
-            height * height_multiplier,
-            lambda pt: self[Coord2D( pt.x % width, pt.y % height ) ]
+                width * width_multiplier,
+                height * height_multiplier,
+                lambda pt: self[ Coord2D( pt.x % width, pt.y % height ) ]
         )
 
     def contains( self, pt: Coord2D ):
         return 0 <= pt.x < self.width and 0 <= pt.y < self.height
 
     def filter(
-        self,
-        filter_fn: Callable[ [ int, int, DataT ], bool ]
+            self,
+            filter_fn: Callable[ [ int, int, DataT ], bool ]
     ) -> Iterable[ tuple[ int, int, DataT ] ]:
         return Field2DFilterIterator( self, filter_fn )
 
     def find( self, filter_fn: Callable[ [ int, int, DataT ], bool ] ) -> Optional[ Coord2D ]:
         for y in range( self.height ):
             for x in range( self.width ):
-                if filter_fn( x, y, self.cells[ y ][ x ] ): return Coord2D.from_coords( x, y )
+                if filter_fn( x, y, self.cells[ y ][ x ] ):
+                    return Coord2D.from_coords( x, y )
         return None
 
     def update( self, update_fn: Callable[ [ int, int, DataT ], DataT ] ) -> None:
@@ -148,7 +157,7 @@ class Field2D[ DataT ]:
                 self.cells[ y ][ x ] = update_fn( x, y, self.cells[ y ][ x ] )
 
     def dump(
-        self, cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ), delim: str = " "
+            self, cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ), delim: str = " "
     ) -> str:
         strs = [ [ cell_str_f( x, y, self.cells[ y ][ x ] ) for x in range( self.width ) ]
                  for y in range( self.height ) ]
@@ -162,19 +171,20 @@ class Field2D[ DataT ]:
         result = 0
         for y, line in enumerate( self.cells ):
             for x, cell in enumerate( line ):
-                if filter_fn( x, y, cell ): result += 1
+                if filter_fn( x, y, cell ):
+                    result += 1
         return result
 
     @classmethod
     def from_input[ DataT, RawCellT ](
-        cls,
-        lines: Iterable[ str ],
-        /, *,
-        line_filter: Callable[ [ str ], bool ] = lambda s: True,
-        line_t: Callable[ [ str ], list[ RawCellT ] ] =
-        lambda s: [ c for c in bytes( s, "UTF-8" ) ],
-        cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
-        cell_t: Callable[ [ RawCellT ], DataT ] = lambda a: a
+            cls,
+            lines: Iterable[ str ],
+            /, *,
+            line_filter: Callable[ [ str ], bool ] = lambda s: True,
+            line_t: Callable[ [ str ], list[ RawCellT ] ] =
+            lambda s: [ c for c in bytes( s, "UTF-8" ) ],
+            cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
+            cell_t: Callable[ [ RawCellT ], DataT ] = lambda a: a
     ):
         height = 0
         width = 0
@@ -188,10 +198,12 @@ class Field2D[ DataT ]:
         return cls( width, height, cells )
 
     @classmethod
-    def from_generate[ DataT ]( cls,
-                                width: int,
-                                height: int,
-                                gen_f: Callable[ [ Coord2D ], DataT ] ):
+    def from_generate[ DataT ](
+            cls,
+            width: int,
+            height: int,
+            gen_f: Callable[ [ Coord2D ], DataT ]
+            ):
         return cls( width, height, [ [ gen_f( Coord2D( x, y ) ) for x in range( width ) ] for y in range( height ) ] )
 
     @classmethod
@@ -206,9 +218,9 @@ class Field2DFilterIterator[ DataT ]:
     filter_fn: Callable[ [ int, int, DataT ], bool ]
 
     def __init__(
-        self,
-        field: Field2D[ DataT ],
-        filter_fn: Callable[ [ int, int, DataT ], bool ]
+            self,
+            field: Field2D[ DataT ],
+            filter_fn: Callable[ [ int, int, DataT ], bool ]
     ):
         self.field = field
         self.filter_fn = filter_fn
@@ -239,10 +251,12 @@ def field_digit_cell_t() -> Callable[ [ int ], int ]:
     return lambda v: v - ord( '0' )
 
 
-CROSS_DIRS_2D = (Coord2D( 0, -1 ),
-                 Coord2D( 1, 0 ),
-                 Coord2D( 0, 1 ),
-                 Coord2D( -1, 0 ))
+CROSS_DIRS_2D = (
+    Coord2D( 0, -1 ),
+    Coord2D( 1, 0 ),
+    Coord2D( 0, 1 ),
+    Coord2D( -1, 0 )
+)
 
 SYM_UP = ord( "^" )
 SYM_LEFT = ord( "<" )
@@ -250,7 +264,7 @@ SYM_RIGHT = ord( ">" )
 SYM_DOWN = ord( "v" )
 SYM_DIRS_2D = {
     SYM_RIGHT: Coord2D( 1, 0 ),
-    SYM_DOWN:  Coord2D( 0, 1 ),
-    SYM_LEFT:  Coord2D( -1, 0 ),
-    SYM_UP:    Coord2D( 0, -1 )
+    SYM_DOWN : Coord2D( 0, 1 ),
+    SYM_LEFT : Coord2D( -1, 0 ),
+    SYM_UP   : Coord2D( 0, -1 )
 }

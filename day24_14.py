@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw
 
 from helper import Coord, Direction, exec_task, exec_tasks, print_ex, read_file
 
+
 type RobotData = tuple[ Coord, Direction ]
 type Data = list[ RobotData ]
 
@@ -31,8 +32,10 @@ def task2( width: int, height: int, data: Data ) -> int:
         counts.clear()
         step += 1
         for index in range( len( data ) ):
-            pts[ index ] = ((pts[ index ][ 0 ] + data[ index ][ 1 ][ 0 ] + width) % width,
-                            (pts[ index ][ 1 ] + data[ index ][ 1 ][ 1 ] + height) % height)
+            pts[ index ] = (
+                (pts[ index ][ 0 ] + data[ index ][ 1 ][ 0 ] + width) % width,
+                (pts[ index ][ 1 ] + data[ index ][ 1 ][ 1 ] + height) % height
+            )
             counts[ pts[ index ] ] += 1
         if max( counts.values() ) == 1:
             img = Image.new( "L", (width, height) )
@@ -51,25 +54,30 @@ def parse_line( line: str ) -> RobotData:
 def move_robot( robot: RobotData, width: int, height: int, time: int ) -> Coord:
     (x, y), (dx, dy) = robot
     x = (x + dx * time) % width
-    if x < 0: x += width
+    if x < 0:
+        x += width
     y = (y + dy * time) % height
-    if y < 0: y += height
+    if y < 0:
+        y += height
     return x, y
 
 
 def get_quadrant( pt: Coord, half_width: int, half_height: int ):
-    if pt[ 0 ] == half_width or pt[ 1 ] == half_height: return 0
+    if pt[ 0 ] == half_width or pt[ 1 ] == half_height:
+        return 0
     return pt[ 0 ] // (half_width + 1) * 2 + pt[ 1 ] // (half_height + 1) + 1
 
 
 def main():
     exec_task( prepare, partial( task1, 11, 7 ), read_file( 'data/day24_14.sample' ), 12 )
-    exec_tasks( prepare,
-                partial( task1, 101, 103 ),
-                partial( task2, 101, 103 ),
-                read_file( 'data/day24_14.in' ),
-                214400550,
-                8149 )
+    exec_tasks(
+        prepare,
+        partial( task1, 101, 103 ),
+        partial( task2, 101, 103 ),
+        read_file( 'data/day24_14.in' ),
+        214400550,
+        8149
+        )
 
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@ from geom2d import Coord2D
 from geom3d import Coord3D, Rect3D
 from helper import exec_tasks, print_ex, read_file
 
+
 START_POINT = Coord2D.from_coords( 1, 0 )
 
 
@@ -45,17 +46,19 @@ def task2( data: Data ) -> int:
     s1, s2, s3 = data.stones[ 0:3 ]
     xvars = symbols( "pxr pyr pzr vxr vyr vzr t1 t2 t3" )
     pxr, pyr, pzr, vxr, vyr, vzr, t1, t2, t3 = xvars
-    solution = nonlinsolve( [
-        t1 * vxr - t1 * s1.v.x + pxr - s1.p.x,
-        t1 * vyr - t1 * s1.v.y + pyr - s1.p.y,
-        t1 * vzr - t1 * s1.v.z + pzr - s1.p.z,
-        t2 * vxr - t2 * s2.v.x + pxr - s2.p.x,
-        t2 * vyr - t2 * s2.v.y + pyr - s2.p.y,
-        t2 * vzr - t2 * s2.v.z + pzr - s2.p.z,
-        t3 * vxr - t3 * s3.v.x + pxr - s3.p.x,
-        t3 * vyr - t3 * s3.v.y + pyr - s3.p.y,
-        t3 * vzr - t3 * s3.v.z + pzr - s3.p.z
-    ], xvars )
+    solution = nonlinsolve(
+            [
+                t1 * vxr - t1 * s1.v.x + pxr - s1.p.x,
+                t1 * vyr - t1 * s1.v.y + pyr - s1.p.y,
+                t1 * vzr - t1 * s1.v.z + pzr - s1.p.z,
+                t2 * vxr - t2 * s2.v.x + pxr - s2.p.x,
+                t2 * vyr - t2 * s2.v.y + pyr - s2.p.y,
+                t2 * vzr - t2 * s2.v.z + pzr - s2.p.z,
+                t3 * vxr - t3 * s3.v.x + pxr - s3.p.x,
+                t3 * vyr - t3 * s3.v.y + pyr - s3.p.y,
+                t3 * vzr - t3 * s3.v.z + pzr - s3.p.z
+            ], xvars
+    )
     sol = next( iter( solution ) )
     return int( sol[ 0 ] + sol[ 1 ] + sol[ 2 ] )
 
@@ -64,8 +67,10 @@ def parse_stone( line: str ) -> Stone:
     s1 = line.split( " @ " )
     crd = s1[ 0 ].split( ", " )
     vel = s1[ 1 ].split( ", " )
-    return Stone( Coord3D( int( crd[ 0 ] ), int( crd[ 1 ] ), int( crd[ 2 ] ) ),
-                  Coord3D( int( vel[ 0 ] ), int( vel[ 1 ] ), int( vel[ 2 ] ) ) )
+    return Stone(
+        Coord3D( int( crd[ 0 ] ), int( crd[ 1 ] ), int( crd[ 2 ] ) ),
+        Coord3D( int( vel[ 0 ] ), int( vel[ 1 ] ), int( vel[ 2 ] ) )
+        )
 
 
 def is_simple_intersect( s1: Stone, s2: Stone, rng: Rect3D ) -> bool:
@@ -84,23 +89,31 @@ def is_simple_intersect( s1: Stone, s2: Stone, rng: Rect3D ) -> bool:
 
 
 def main():
-    exec_tasks( partial( Data, rng = Rect3D.from_coords( 7, 7, 0, 27, 27, 0 ) ),
-                task1,
-                task2,
-                read_file( 'data/day23_24.sample' ),
-                2,
-                47 )
-    exec_tasks( partial( Data, rng = Rect3D.from_coords( 200000000000000,
-                                                         200000000000000,
-                                                         0,
-                                                         400000000000000,
-                                                         400000000000000,
-                                                         0 ) ),
-                task1,
-                task2,
-                read_file( 'data/day23_24.in' ),
-                28174,
-                568386357876600 )
+    exec_tasks(
+        partial( Data, rng = Rect3D.from_coords( 7, 7, 0, 27, 27, 0 ) ),
+        task1,
+        task2,
+        read_file( 'data/day23_24.sample' ),
+        2,
+        47
+        )
+    exec_tasks(
+        partial(
+            Data, rng = Rect3D.from_coords(
+                200000000000000,
+                200000000000000,
+                0,
+                400000000000000,
+                400000000000000,
+                0
+                )
+            ),
+        task1,
+        task2,
+        read_file( 'data/day23_24.in' ),
+        28174,
+        568386357876600
+        )
 
 
 if __name__ == '__main__':

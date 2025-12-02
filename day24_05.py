@@ -43,21 +43,27 @@ def split_pages( s: str ) -> tuple[ int, ... ]:
 def check_sample( sample: tuple[ int, ... ], data: Data ) -> int:
     prohibited: set[ int ] = set( { } )
     for page in sample:
-        if page in prohibited: return 0
+        if page in prohibited:
+            return 0
         preceding = data.preceding_pages.get( page )
-        if preceding is not None: prohibited.update( preceding )
+        if preceding is not None:
+            prohibited.update( preceding )
     return sample[ len( sample ) // 2 ]
 
 
 def fix_sample( sample: tuple[ int, ... ], data: Data ) -> int:
     fixed = list( sample )
+
     def cmp_fn( page1: int, page2: int ) -> int:
         page1_preceding = data.preceding_pages.get( page1 )
         page2_preceding = data.preceding_pages.get( page2 )
-        if page1_preceding is not None and page2 in page1_preceding: return 1
-        if page2_preceding is not None and page1 in page2_preceding: return -1
+        if page1_preceding is not None and page2 in page1_preceding:
+            return 1
+        if page2_preceding is not None and page1 in page2_preceding:
+            return -1
         return 0
-    fixed = sorted( fixed, key=functools.cmp_to_key( cmp_fn ) )
+
+    fixed = sorted( fixed, key = functools.cmp_to_key( cmp_fn ) )
     return fixed[ len( sample ) // 2 ]
 
 

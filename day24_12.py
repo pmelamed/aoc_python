@@ -1,8 +1,9 @@
 import itertools
 from collections import defaultdict
 
-from helper import Coord, CROSS_DIRS, Direction, exec_tasks, Field, field_from_input, field_value, move_forward, \
-    print_ex, read_file
+from helper import (
+    CROSS_DIRS, Coord, Direction, Field, exec_tasks, field_from_input, field_value, move_forward, print_ex, read_file
+)
 
 
 def prepare( lines: list[ str ] ) -> tuple[ Field[ int ], Field[ int ], dict[ int, int ], dict[ int, str ] ]:
@@ -49,14 +50,17 @@ def task2( data: tuple[ Field[ int ], Field[ int ], dict[ int, int ], dict[ int,
             pt_region = cell( pt )
             cmp_region = cell( move_forward( pt, dcmp ) )
             if pt_region != region:
-                if side: sides[ region ] += 1
+                if side:
+                    sides[ region ] += 1
                 region = pt_region
             else:
                 if cmp_region == pt_region:
-                    if side: sides[ region ] += 1
+                    if side:
+                        sides[ region ] += 1
             side = pt_region != cmp_region
             pt = move_forward( pt, dpt )
-        if side: sides[ region ] += 1
+        if side:
+            sides[ region ] += 1
 
     for y in range( field.height ):
         scan_line( (0, y), (1, 0), (0, -1) )

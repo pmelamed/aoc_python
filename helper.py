@@ -4,6 +4,7 @@ import traceback
 from collections.abc import Callable, Iterable
 from typing import Any, Optional
 
+
 type Coord = tuple[ int, int ]
 type Direction = tuple[ int, int ]
 type Rect = tuple[ int, int, int, int ]
@@ -51,19 +52,24 @@ class Field[ DataT ]:
     def contains( self, pt: Coord ):
         return 0 <= pt[ 0 ] < self.width and 0 <= pt[ 1 ] < self.height
 
-    def filter( self,
-                filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) -> Iterable[ tuple[ int, int, DataT ] ]:
+    def filter(
+            self,
+            filter_fn: Callable[ [ int, int, DataT, Any ], bool ]
+            ) -> Iterable[ tuple[ int, int, DataT ] ]:
         return FieldFilterIterator( self, filter_fn )
 
     def find( self, filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) -> Optional[ Coord ]:
         for y in range( self.height ):
             for x in range( self.width ):
-                if filter_fn( x, y, self.cells[ y ][ x ], self ): return x, y
+                if filter_fn( x, y, self.cells[ y ][ x ], self ):
+                    return x, y
         return None
 
-    def dump( self,
-              cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ),
-              delim: str = " " ) -> str:
+    def dump(
+            self,
+            cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ),
+            delim: str = " "
+            ) -> str:
         strs = [ [ cell_str_f( x, y, self.cells[ y ][ x ] ) for x in range( self.width ) ]
                  for y in range( self.height ) ]
         cell_width = max( max( len( cell ) for cell in line ) for line in strs )
@@ -77,9 +83,9 @@ class FieldFilterIterator[ DataT ]:
     filter_fn: Callable[ [ int, int, DataT, Field[ DataT ] ], bool ]
 
     def __init__(
-        self,
-        field: Field[ DataT ],
-        filter_fn: Callable[ [ int, int, DataT, Field[ DataT ] ], bool ]
+            self,
+            field: Field[ DataT ],
+            filter_fn: Callable[ [ int, int, DataT, Field[ DataT ] ], bool ]
     ):
         self.field = field
         self.filter_fn = filter_fn
@@ -103,13 +109,13 @@ class FieldFilterIterator[ DataT ]:
 
 
 def field_from_input[ DataT, RawCellT ](
-    lines: Iterable[ str ],
-    /, *,
-    line_filter: Callable[ [ str ], bool ] = lambda s: True,
-    line_t: Callable[ [ str ], list[ RawCellT ] ] =
-    lambda s: [ c for c in bytes( s, "UTF-8" ) ],
-    cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
-    cell_t: Callable[ [ RawCellT ], DataT ] = lambda a: a
+        lines: Iterable[ str ],
+        /, *,
+        line_filter: Callable[ [ str ], bool ] = lambda s: True,
+        line_t: Callable[ [ str ], list[ RawCellT ] ] =
+        lambda s: [ c for c in bytes( s, "UTF-8" ) ],
+        cell_filter: Callable[ [ RawCellT ], bool ] = lambda s: True,
+        cell_t: Callable[ [ RawCellT ], DataT ] = lambda a: a
 ) -> Field[ DataT ]:
     height = 0
     width = 0
@@ -144,9 +150,9 @@ def field_digit_cell_t() -> Callable[ [ int ], int ]:
 
 
 def task_check[ DataT, ResultT: str | int ](
-    func: Callable[ [ DataT ], ResultT ] | None,
-    data: DataT,
-    sample: ResultT
+        func: Callable[ [ DataT ], ResultT ] | None,
+        data: DataT,
+        sample: ResultT
 ):
     start = now_utc()
     result = func( data )
@@ -165,17 +171,18 @@ def now_utc():
 
 
 def first[ _T ]( itr: Iterable[ _T ] ) -> Optional[ _T ]:
-    for v in itr: return v
+    for v in itr:
+        return v
     return None
 
 
 def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
-    prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
-    task1_fn: Callable[ [ DataT ], ResultT1 ],
-    task2_fn: Callable[ [ DataT ], ResultT2 ],
-    data: list[ str ] | DataT,
-    check_value1: ResultT1 | None,
-    check_value2: ResultT2 | None
+        prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
+        task1_fn: Callable[ [ DataT ], ResultT1 ],
+        task2_fn: Callable[ [ DataT ], ResultT2 ],
+        data: list[ str ] | DataT,
+        check_value1: ResultT1 | None,
+        check_value2: ResultT2 | None
 ):
     if prepare_fn is not None:
         data = prepare_fn( data )
@@ -184,10 +191,10 @@ def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
 
 
 def exec_task[ DataT, ResultT: str | int ](
-    prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
-    task_fn: Callable[ [ DataT ], ResultT ],
-    data: list[ str ] | DataT,
-    check_value: ResultT | None
+        prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
+        task_fn: Callable[ [ DataT ], ResultT ],
+        data: list[ str ] | DataT,
+        check_value: ResultT | None
 ):
     if prepare_fn is not None:
         data = prepare_fn( data )

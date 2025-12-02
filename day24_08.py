@@ -8,9 +8,11 @@ class Data:
     rect: helper.Rect
     antenna: dict[ int, list[ helper.Coord ] ]
 
-    def __init__( self,
-                  rect: helper.Rect,
-                  antenna: dict[ int, list[ helper.Coord ] ] ):
+    def __init__(
+            self,
+            rect: helper.Rect,
+            antenna: dict[ int, list[ helper.Coord ] ]
+            ):
         self.rect = rect
         self.antenna = antenna
 
@@ -43,19 +45,19 @@ def task2( data: Data ) -> int:
     antinodes: set[ helper.Coord ] = set()
     for antennas in data.antenna.values():
         for a1, a2 in itertools.combinations( antennas, 2 ):
-            pair_nodes: list[ helper.Coord ] = [a1, a2]
+            pair_nodes: list[ helper.Coord ] = [ a1, a2 ]
             d = helper.coord_sub( a2, a1 )
 
             node = helper.coord_sub( a1, d )
-            while helper.inside_rect(node, data.rect):
-                pair_nodes.append(node)
-                node = helper.coord_sub(node, d )
+            while helper.inside_rect( node, data.rect ):
+                pair_nodes.append( node )
+                node = helper.coord_sub( node, d )
 
             node = helper.coord_add( a2, d )
-            while helper.inside_rect(node, data.rect):
-                pair_nodes.append(node)
-                node = helper.coord_add(node, d )
-            antinodes.update(pair_nodes)
+            while helper.inside_rect( node, data.rect ):
+                pair_nodes.append( node )
+                node = helper.coord_add( node, d )
+            antinodes.update( pair_nodes )
     return len( antinodes )
 
 

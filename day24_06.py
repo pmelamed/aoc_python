@@ -10,10 +10,12 @@ class Data:
     start_position: tuple[ int, int ]
     rect: tuple[ int, int, int, int ]
 
-    def __init__( self,
-                  field: list[ bytearray ],
-                  obstacles: set[ tuple[ int, int ] ],
-                  start_position: tuple[ int, int ] ):
+    def __init__(
+            self,
+            field: list[ bytearray ],
+            obstacles: set[ tuple[ int, int ] ],
+            start_position: tuple[ int, int ]
+            ):
         self.rect = (0, 0, len( field[ 0 ] ), len( field ))
         self.field = field
         self.obstacles = obstacles
@@ -68,7 +70,8 @@ def should_place_obstacle( data: Data, pos: tuple[ int, int ] ) -> tuple[ int, i
 
     def predicate( pt: tuple[ int, int ], direct: tuple[ int, int ] ) -> bool | None:
         pt_visited = visited[ pt ]
-        if direct in pt_visited: return True
+        if direct in pt_visited:
+            return True
         pt_visited.add( direct )
         return None
 
@@ -78,11 +81,13 @@ def should_place_obstacle( data: Data, pos: tuple[ int, int ] ) -> tuple[ int, i
     return pos if result else None
 
 
-def trace_until( pos: tuple[ int, int ],
-                 direction: tuple[ int, int ],
-                 obstacles: set[ tuple[ int, int ] ],
-                 rect: tuple[ int, int, int, int ],
-                 predicate: Callable[ [ tuple[ int, int ], tuple[ int, int ] ], bool | None ] ) -> bool:
+def trace_until(
+        pos: tuple[ int, int ],
+        direction: tuple[ int, int ],
+        obstacles: set[ tuple[ int, int ] ],
+        rect: tuple[ int, int, int, int ],
+        predicate: Callable[ [ tuple[ int, int ], tuple[ int, int ] ], bool | None ]
+        ) -> bool:
     while helper.inside_rect( pos, rect ):
         if pos in obstacles:
             pos = helper.move_backward( pos, direction )

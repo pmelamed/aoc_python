@@ -1,7 +1,9 @@
 from typing import Callable
 
-from helper import Coord, Direction, exec_task, exec_tasks, Field, field_from_input, move_backward, move_forward, \
-    print_ex, read_file
+from helper import (
+    Coord, Direction, Field, exec_task, exec_tasks, field_from_input, move_backward, move_forward, print_ex, read_file
+)
+
 
 type Data = tuple[ Field[ int ], str, Coord ]
 
@@ -74,16 +76,21 @@ def move_horizontally( field: Field[ int ], move: Direction, robot: Coord ) -> C
 def move_vertically( field: Field[ int ], move: Direction, robot: Coord ) -> Coord:
     pt = move_forward( robot, move )
     cell = field[ pt ]
-    if cell == OBSTACLE: return robot
-    if cell == EMPTY: return pt
-    if cell == LBOX: return pt if move_box_vertically( field, move, pt ) else robot
-    if cell == RBOX: return pt if move_box_vertically( field, move, move_forward( pt, (-1, 0) ) ) else robot
+    if cell == OBSTACLE:
+        return robot
+    if cell == EMPTY:
+        return pt
+    if cell == LBOX:
+        return pt if move_box_vertically( field, move, pt ) else robot
+    if cell == RBOX:
+        return pt if move_box_vertically( field, move, move_forward( pt, (-1, 0) ) ) else robot
 
 
 def move_box_vertically( field: Field[ int ], move: Direction, box: Coord ) -> bool:
     points: dict[ Coord, int ] = dict()
     if scan_box_vertically( field, move, box, points ):
-        for pt in points.keys(): field[ pt ] = EMPTY
+        for pt in points.keys():
+            field[ pt ] = EMPTY
         for pt, side in points.items():
             field[ move_forward( pt, move ) ] = side
         return True
@@ -98,12 +105,15 @@ def scan_box_vertically( field: Field[ int ], move: Direction, lbox: Coord, poin
     nrbox = move_forward( rbox, move )
     nlcell = field[ nlbox ]
     nrcell = field[ nrbox ]
-    if nlcell == OBSTACLE or nrcell == OBSTACLE: return False
-    if nlcell == LBOX: return scan_box_vertically( field, move, nlbox, points )
+    if nlcell == OBSTACLE or nrcell == OBSTACLE:
+        return False
+    if nlcell == LBOX:
+        return scan_box_vertically( field, move, nlbox, points )
     rscan = True
     if nrcell == LBOX:
         rscan = scan_box_vertically( field, move, nrbox, points )
-        if nlcell == EMPTY: return rscan
+        if nlcell == EMPTY:
+            return rscan
     if nlcell == RBOX:
         lscan = scan_box_vertically( field, move, move_forward( nlbox, (-1, 0) ), points )
         if nrcell == EMPTY:

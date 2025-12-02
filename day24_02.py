@@ -21,19 +21,23 @@ def is_row_safe( levels_row: [ int ] ) -> int:
     global_sign = 0
     for index in range( len( levels_row ) - 1 ):
         diff = levels_row[ index ] - levels_row[ index + 1 ]
-        if abs( diff ) < 1 or abs( diff ) > 3: return 0
+        if abs( diff ) < 1 or abs( diff ) > 3:
+            return 0
         sign = diff // abs( diff )
-        if global_sign != 0 and sign != global_sign: return 0
+        if global_sign != 0 and sign != global_sign:
+            return 0
         global_sign = sign
     return 1
 
 
 def is_row_safe_ext( levels_row: [ int ] ):
-    if is_row_safe( levels_row ): return 1
+    if is_row_safe( levels_row ):
+        return 1
     for index in range( len( levels_row ) ):
         row_copy = levels_row.copy()
         row_copy.pop( index )
-        if is_row_safe( row_copy ): return 1
+        if is_row_safe( row_copy ):
+            return 1
     return 0
 
 

@@ -30,14 +30,18 @@ def task1( graf: dict[ str, set[ str ] ] ) -> int:
 
 
 def main():
-    exec_task( prepare,
-               task1,
-               read_file( 'data/day23_25.sample' ),
-               54 )
-    exec_task( prepare,
-               task1,
-               read_file( 'data/day23_25.in' ),
-               603368 )
+    exec_task(
+        prepare,
+        task1,
+        read_file( 'data/day23_25.sample' ),
+        54
+        )
+    exec_task(
+        prepare,
+        task1,
+        read_file( 'data/day23_25.in' ),
+        603368
+        )
 
 
 if __name__ == '__main__':

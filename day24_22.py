@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from helper import exec_task, exec_tasks, print_ex, read_file
 
+
 type Combination = tuple[ int, int, int, int ]
 
 
@@ -15,7 +16,8 @@ def task1( numbers: list[ int ] ) -> int:
 
 def task2( numbers: list[ int ] ) -> int:
     gains: dict[ Combination, int ] = defaultdict( lambda: 0 )
-    for number in numbers: process_number( number, 2000, gains )
+    for number in numbers:
+        process_number( number, 2000, gains )
     return max( gains.values() )
 
 
@@ -38,7 +40,8 @@ def process_number( number: int, n: int, gain: dict[ Combination, int ] ):
     already_met: set[ Combination ] = set()
     prev_val = number % 10
     combination = (None, None, None, None)
-    if log: print( f"{number:15}: {prev_val}" )
+    if log:
+        print( f"{number:15}: {prev_val}" )
     for _ in range( n ):
         number = gen_next( number )
         val = number % 10
@@ -48,7 +51,8 @@ def process_number( number: int, n: int, gain: dict[ Combination, int ] ):
             combination[ 3 ],
             (val - prev_val)
         )
-        if log: print( f"{start_number:-6}{number:15}: {val}-{prev_val} --> {combination}" )
+        if log:
+            print( f"{start_number:-6}{number:15}: {val}-{prev_val} --> {combination}" )
         if (combination[ 0 ] is not None) and (combination not in already_met):
             already_met.add( combination )
             gain[ combination ] += val
@@ -57,24 +61,24 @@ def process_number( number: int, n: int, gain: dict[ Combination, int ] ):
 
 def main():
     exec_task(
-        prepare,
-        task1,
-        [ "1", "10", "100", "2024" ],
-        37327623
+            prepare,
+            task1,
+            [ "1", "10", "100", "2024" ],
+            37327623
     )
     exec_task(
-        prepare,
-        task2,
-        [ "1", "2", "3", "2024" ],
-        23
+            prepare,
+            task2,
+            [ "1", "2", "3", "2024" ],
+            23
     )
     exec_tasks(
-        prepare,
-        task1,
-        task2,
-        read_file( 'data/day24_22.in' ),
-        21147129593,
-        2445
+            prepare,
+            task1,
+            task2,
+            read_file( 'data/day24_22.in' ),
+            21147129593,
+            2445
     )
 
 

@@ -2,6 +2,7 @@ from typing import TypeAlias
 
 import helper
 
+
 FileInfo: TypeAlias = tuple[ int, int, int ]  # ID, Position, Length
 SpaceInfo: TypeAlias = tuple[ int, int ]  # Position, Length
 
@@ -10,9 +11,11 @@ class Data:
     files: list[ FileInfo ]
     spaces: list[ SpaceInfo ]
 
-    def __init__( self,
-                  files: list[ FileInfo ],
-                  empty: list[ SpaceInfo ] ):
+    def __init__(
+            self,
+            files: list[ FileInfo ],
+            empty: list[ SpaceInfo ]
+            ):
         self.files = files
         self.spaces = empty
 
@@ -43,8 +46,10 @@ def task1( data: Data ) -> int:
     while len( spaces ) > 0 and len( files ) > 0 and files[ -1 ][ 1 ] > spaces[ -1 ][ 0 ]:
         file, space, increase = move_file( files.pop(), spaces.pop() )
         result += increase
-        if file[ 2 ] != 0: files.append( file )
-        if space[ 1 ] != 0: spaces.append( space )
+        if file[ 2 ] != 0:
+            files.append( file )
+        if space[ 1 ] != 0:
+            spaces.append( space )
     for file in files:
         result += sum( [ file[ 0 ] * pos for pos in range( file[ 1 ], file[ 1 ] + file[ 2 ] ) ] )
     return result
@@ -75,15 +80,18 @@ def task2( data: Data ) -> int:
 
 def move_file( file: FileInfo, empty: SpaceInfo ) -> tuple[ FileInfo, SpaceInfo, int ]:
     moved_cells = min( file[ 2 ], empty[ 1 ] )
-    return ((file[ 0 ], file[ 1 ], file[ 2 ] - moved_cells),
-            (empty[ 0 ] + moved_cells, empty[ 1 ] - moved_cells),
-            sum( file[ 0 ] * pos for pos in range( empty[ 0 ], empty[ 0 ] + moved_cells ) ))
+    return (
+        (file[ 0 ], file[ 1 ], file[ 2 ] - moved_cells),
+        (empty[ 0 ] + moved_cells, empty[ 1 ] - moved_cells),
+        sum( file[ 0 ] * pos for pos in range( empty[ 0 ], empty[ 0 ] + moved_cells ) )
+    )
 
 
 def find_target_space( file: FileInfo, spaces: list[ SpaceInfo ] ) -> int:
     index = 0
     while index < len( spaces ) and spaces[ index ][ 0 ] < file[ 1 ]:
-        if spaces[ index ][ 1 ] >= file[ 2 ]: return index
+        if spaces[ index ][ 1 ] >= file[ 2 ]:
+            return index
         index += 1
     return -1
 
