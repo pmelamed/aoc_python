@@ -55,7 +55,7 @@ class Field[ DataT ]:
     def filter(
             self,
             filter_fn: Callable[ [ int, int, DataT, Any ], bool ]
-            ) -> Iterable[ tuple[ int, int, DataT ] ]:
+    ) -> Iterable[ tuple[ int, int, DataT ] ]:
         return FieldFilterIterator( self, filter_fn )
 
     def find( self, filter_fn: Callable[ [ int, int, DataT, Any ], bool ] ) -> Optional[ Coord ]:
@@ -69,7 +69,7 @@ class Field[ DataT ]:
             self,
             cell_str_f: Callable[ [ int, int, DataT ], str ] = lambda x, y, cell: str( cell ),
             delim: str = " "
-            ) -> str:
+    ) -> str:
         strs = [ [ cell_str_f( x, y, self.cells[ y ][ x ] ) for x in range( self.width ) ]
                  for y in range( self.height ) ]
         cell_width = max( max( len( cell ) for cell in line ) for line in strs )
