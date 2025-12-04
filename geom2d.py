@@ -68,39 +68,73 @@ class Rect2D:
     def __str__( self ):
         return f"{self.a}~{self.b}"
 
+    def __iter__( self ):
+        return Rect2DIterator( self )
+
     def square( self ):
         s = self.a - self.b
         return abs( s.x * s.y )
+
+    def contains( self, coord: Coord2D ):
+        return self.a.x <= coord.x < self.b.x and self.a.y <= coord.y < self.b.y
 
     @classmethod
     def from_corners( cls, a: Coord2D, b: Coord2D, /, *, sort = False ):
         if sort:
             return Rect2D(
-                Coord2D.from_coords( min( a.x, b.x ), min( a.y, b.y ) ),
-                Coord2D.from_coords( max( a.x, b.x ), max( a.y, b.y ) )
-                )
+                    Coord2D.from_coords( min( a.x, b.x ), min( a.y, b.y ) ),
+                    Coord2D.from_coords( max( a.x, b.x ), max( a.y, b.y ) )
+            )
         else:
             return Rect2D(
-                Coord2D.from_coords( a.x, a.y ),
-                Coord2D.from_coords( b.x, b.y )
-                )
+                    Coord2D.from_coords( a.x, a.y ),
+                    Coord2D.from_coords( b.x, b.y )
+            )
 
     @classmethod
     def from_coords( cls, x1: int, y1: int, x2: int, y2: int, /, *, sort = False ):
         return Rect2D.from_corners(
-            Coord2D.from_coords( x1, y1 ),
-            Coord2D.from_coords( x2, y2 ),
-            sort = sort
-            )
+                Coord2D.from_coords( x1, y1 ),
+                Coord2D.from_coords( x2, y2 ),
+                sort = sort
+        )
 
     @classmethod
     def from_coords_list( cls, coords: Iterable[ int ], /, *, sort = False ):
         ts = iter( coords )
         return Rect2D.from_corners(
-            Coord2D.from_coords( next( ts ), next( ts ) ),
-            Coord2D.from_coords( next( ts ), next( ts ) ),
-            sort = sort
-            )
+                Coord2D.from_coords( next( ts ), next( ts ) ),
+                Coord2D.from_coords( next( ts ), next( ts ) ),
+                sort = sort
+        )
+
+
+class Rect2DIterator:
+    rect: Rect2D
+    x: int
+    y: int
+
+    def __init__( self, rect: Rect2D ):
+        self.rect = rect
+        self.x = rect.a.x
+        self.y = rect.a.y
+
+    def __iter__( self ):
+        self.x = self.rect.a.x
+        self.y = self.rect.a.y
+        return self
+
+    def __next__( self ) -> Coord2D:
+        if self.y >= self.rect.b.y:
+            raise StopIteration()
+        if self.rect.a.x >= self.rect.b.x:
+            raise StopIteration()
+        result = Coord2D.from_coords(self.x, self.y)
+        self.x += 1
+        if self.x >= self.rect.b.x:
+            self.x = self.rect.a.x
+            self.y += 1
+        return result
 
 
 class Field2D[ DataT ]:
@@ -175,6 +209,9 @@ class Field2D[ DataT ]:
                     result += 1
         return result
 
+    def count_around( self, cell: Coord2D, filter_fn: Callable[ [ DataT ], bool ], dirs: Iterable[ Coord2D ] ):
+        return len( [ direction for direction in dirs if filter_fn( self[ cell + direction ] ) ] )
+
     @classmethod
     def from_input[ DataT, RawCellT ](
             cls,
@@ -203,7 +240,7 @@ class Field2D[ DataT ]:
             width: int,
             height: int,
             gen_f: Callable[ [ Coord2D ], DataT ]
-            ):
+    ):
         return cls( width, height, [ [ gen_f( Coord2D( x, y ) ) for x in range( width ) ] for y in range( height ) ] )
 
     @classmethod
@@ -256,6 +293,17 @@ CROSS_DIRS_2D = (
     Coord2D( 1, 0 ),
     Coord2D( 0, 1 ),
     Coord2D( -1, 0 )
+)
+
+STAR_DIRS_2D = (
+    Coord2D( 0, -1 ),
+    Coord2D( 1, -1 ),
+    Coord2D( 1, 0 ),
+    Coord2D( 1, 1 ),
+    Coord2D( 0, 1 ),
+    Coord2D( -1, 1 ),
+    Coord2D( -1, 0 ),
+    Coord2D( -1, -1 )
 )
 
 SYM_UP = ord( "^" )
