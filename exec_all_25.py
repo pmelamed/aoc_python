@@ -3,6 +3,7 @@ import day25_02
 import day25_03
 import day25_04
 import day25_05
+import day25_06
 import helper
 
 
@@ -18,5 +19,7 @@ if __name__ == '__main__':
         day25_04.main()
         print( "-- 25' 05 ----------------------------------------------" )
         day25_05.main()
+        print( "-- 25' 06 ----------------------------------------------" )
+        day25_06.main()
     except Exception as ex:
         helper.print_ex( ex )
