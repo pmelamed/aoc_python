@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from geom2d import Coord2D, Field2D
+from geom2d import Field2D
 from helper import exec_tasks, print_ex, read_file
 
 
@@ -22,7 +22,7 @@ def task1( data: Data ) -> int:
     for y in range( 1, data.splitters.height ):
         next_beams = set()
         for beam in beams:
-            if data.splitters[ Coord2D.from_coords( beam, y ) ]:
+            if data.splitters.get( beam, y ):
                 result += 1
                 next_beams.add( beam - 1 )
                 next_beams.add( beam + 1 )
@@ -38,7 +38,7 @@ def task2( data: Data ) -> int:
     for y in range( 1, data.splitters.height ):
         next_beams = defaultdict( lambda: 0 )
         for x, count in beams.items():
-            if data.splitters[ Coord2D.from_coords( x, y ) ]:
+            if data.splitters.get( x, y ):
                 next_beams[ x - 1 ] += count
                 next_beams[ x + 1 ] += count
             else:

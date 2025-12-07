@@ -129,7 +129,7 @@ class Rect2DIterator:
             raise StopIteration()
         if self.rect.a.x >= self.rect.b.x:
             raise StopIteration()
-        result = Coord2D.from_coords(self.x, self.y)
+        result = Coord2D.from_coords( self.x, self.y )
         self.x += 1
         if self.x >= self.rect.b.x:
             self.x = self.rect.a.x
@@ -171,6 +171,9 @@ class Field2D[ DataT ]:
 
     def contains( self, pt: Coord2D ):
         return 0 <= pt.x < self.width and 0 <= pt.y < self.height
+
+    def get( self, x: int, y: int ) -> DataT:
+        return self.cells[ y ][ x ]
 
     def filter(
             self,
