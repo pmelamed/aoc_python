@@ -33,7 +33,6 @@ def task1( data: Data ) -> int:
 
 
 def task2( data: Data ) -> int:
-    result: int = 0
     beams: dict[ int, int ] = defaultdict( lambda: 0, { data.start_x: 1 } )
     for y in range( 1, data.splitters.height ):
         next_beams = defaultdict( lambda: 0 )

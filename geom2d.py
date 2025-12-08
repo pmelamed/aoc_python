@@ -34,7 +34,7 @@ class Coord2D:
         return (self.y << 16) ^ self.x
 
     def manhattan( self ):
-        return self.x + self.y
+        return abs(self.x) + abs(self.y)
 
     @classmethod
     def from_coords( cls, x: int, y: int ):
