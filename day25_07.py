@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from geom2d import Field2D
 from helper import exec_tasks, print_ex, read_file
 
@@ -18,32 +16,36 @@ class Data:
 
 def task1( data: Data ) -> int:
     result: int = 0
-    beams: set[ int ] = { data.start_x }
+    beams: list[ int ] = [ 0 ] * data.splitters.width
+    beams[ data.start_x ] = 1
     for y in range( 1, data.splitters.height ):
-        next_beams = set()
-        for beam in beams:
-            if data.splitters.get( beam, y ):
+        next_beams = [ 0 ] * data.splitters.width
+        for x in range( len( beams ) ):
+            if beams[ x ] == 0:
+                continue
+            if data.splitters.get( x, y ):
                 result += 1
-                next_beams.add( beam - 1 )
-                next_beams.add( beam + 1 )
+                next_beams[ x - 1 ] = 1
+                next_beams[ x + 1 ] = 1
             else:
-                next_beams.add( beam )
+                next_beams[ x ] = 1
         beams = next_beams
     return result
 
 
 def task2( data: Data ) -> int:
-    beams: dict[ int, int ] = defaultdict( lambda: 0, { data.start_x: 1 } )
+    beams: list[ int ] = [ 0 ] * data.splitters.width
+    beams[ data.start_x ] = 1
     for y in range( 1, data.splitters.height ):
-        next_beams = defaultdict( lambda: 0 )
-        for x, count in beams.items():
+        next_beams = [ 0 ] * data.splitters.width
+        for x, count in enumerate( beams ):
             if data.splitters.get( x, y ):
                 next_beams[ x - 1 ] += count
                 next_beams[ x + 1 ] += count
             else:
                 next_beams[ x ] += count
         beams = next_beams
-    return sum( beams.values() )
+    return sum( beams )
 
 
 def main():
