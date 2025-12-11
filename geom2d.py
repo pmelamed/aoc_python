@@ -45,6 +45,10 @@ class Coord2D:
         return cls( t[ 0 ], t[ 1 ] )
 
     @classmethod
+    def from_str( cls, coords_str: str, delim = "," ):
+        return cls.from_tuple( tuple( int( n ) for n in coords_str.split( delim ) ) )
+
+    @classmethod
     def key_x( cls, self ):
         return self.x
 
@@ -174,6 +178,9 @@ class Field2D[ DataT ]:
 
     def get( self, x: int, y: int ) -> DataT:
         return self.cells[ y ][ x ]
+
+    def set( self, x: int, y: int, v: DataT ) -> None:
+        self.cells[ y ][ x ] = v
 
     def filter(
             self,

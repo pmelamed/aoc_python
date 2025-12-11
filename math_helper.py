@@ -9,3 +9,7 @@ def progression_sum[ T: Optional[ int ] ]( first: T = None, last: T = None, delt
     if count is None:
         count = (last - first) // delta + 1
     return (first + last) * count // 2
+
+
+def sign( v: int ) -> int:
+    return -1 if v < 0 else (1 if v > 0 else 0)
