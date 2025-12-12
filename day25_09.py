@@ -2,8 +2,6 @@ import itertools
 from bisect import bisect_left
 from typing import Iterable
 
-from PIL import Image, ImageDraw
-
 from geom2d import CROSS_DIRS_2D, Coord2D, Field2D
 from helper import exec_tasks, print_ex, read_file
 
@@ -39,21 +37,11 @@ class Data:
 
 def task1( data: Data ) -> int:
     return data.sorted_squares[ 0 ].square
-    # result = 0
-    # for idx1 in range( len( data.tiles ) - 1 ):
-    #     for idx2 in range( idx1 + 1, len( data.tiles ) ):
-    #         tile1 = data.tiles[ idx1 ]
-    #         tile2 = data.tiles[ idx2 ]
-    #         diff = tile2 - tile1
-    #         square = (abs( diff.x ) + 1) * (abs( diff.y ) + 1)
-    #         if square > result:
-    #             result = square
-    # return result
 
 
 def task2( data: Data ) -> int:
-    x_cells = make_sparce_axis( tile.x for tile in data.tiles )
-    y_cells = make_sparce_axis( tile.y for tile in data.tiles )
+    x_cells = make_sparse_axis( tile.x for tile in data.tiles )
+    y_cells = make_sparse_axis( tile.y for tile in data.tiles )
 
     width = len( x_cells )
     height = len( y_cells )
@@ -61,8 +49,6 @@ def task2( data: Data ) -> int:
     compressed_tiles: list[ Coord2D ] = [
         compress_tile( tile, [ x[ 0 ] for x in x_cells ], [ y[ 0 ] for y in y_cells ] ) for tile in data.tiles
     ]
-    # print( f"{data.tiles}" )
-    # print( f"{width} -> {x_cells} -> {compressed_tiles}" )
     bitmap: Field2D[ int ] = Field2D.from_value( width, height, 0 )
     for idx in range( len( compressed_tiles ) ):
         tile1 = compressed_tiles[ idx ]
@@ -95,7 +81,7 @@ def check_square( corner1: Coord2D, corner2: Coord2D, bitmap: Field2D[ int ] ):
     )
 
 
-def make_sparce_axis( in_coords: Iterable[ int ] ) -> list[ tuple[ int, int ] ]:
+def make_sparse_axis( in_coords: Iterable[ int ] ) -> list[ tuple[ int, int ] ]:
     coords = list( set( in_coords ) )
     coords.sort()
     lo: list[ int ] = [ ]
