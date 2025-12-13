@@ -1,6 +1,6 @@
 import functools
 import itertools
-from typing import Callable, Iterable, Optional
+from typing import Callable, Iterable, Literal, Optional
 
 
 @functools.total_ordering
@@ -34,7 +34,7 @@ class Coord2D:
         return (self.y << 16) ^ self.x
 
     def manhattan( self ):
-        return abs(self.x) + abs(self.y)
+        return abs( self.x ) + abs( self.y )
 
     @classmethod
     def from_coords( cls, x: int, y: int ):
@@ -221,6 +221,31 @@ class Field2D[ DataT ]:
 
     def count_around( self, cell: Coord2D, filter_fn: Callable[ [ DataT ], bool ], dirs: Iterable[ Coord2D ] ):
         return len( [ direction for direction in dirs if filter_fn( self[ cell + direction ] ) ] )
+
+    def turn90_cw( self ):
+        return Field2D.from_generate(
+                self.height,
+                self.width,
+                lambda coord: self.get( coord.y, self.height - coord.x - 1 )
+        )
+
+    def flip_horizontally( self ):
+        return Field2D.from_generate(
+                self.width,
+                self.height,
+                lambda coord: self.get( self.width - coord.x - 1, coord.y )
+        )
+
+    def flip_vertically( self ):
+        return Field2D.from_generate(
+                self.width,
+                self.height,
+                lambda coord: self.get( coord.x, self.height - coord.y - 1 )
+        )
+
+    def make_mask( self, bit_fn: Callable[ [ int, int, DataT ], Literal[ 0, 1 ] ] ) -> list[ int ]:
+        return [ sum( bit_fn( x, y, self.cells[ y ][ x ] ) << x for x in range( self.width ) )
+                 for y in range( self.height ) ]
 
     @classmethod
     def from_input[ DataT, RawCellT ](
