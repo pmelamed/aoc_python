@@ -256,3 +256,7 @@ def field_rect( width: int, height: int ) -> Rect:
 
 def ignore_args( n: int, fn: Callable ):
     return lambda *args: fn( *args[ n: ] )
+
+
+def first_line( lines: list[ str ] ) -> str:
+    return lines[ 0 ]
