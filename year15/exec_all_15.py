@@ -9,6 +9,7 @@ import day15_08
 import day15_09
 import day15_10
 import day15_11
+import day15_12
 import helper
 
 
@@ -36,5 +37,7 @@ if __name__ == '__main__':
         day15_10.main()
         print( "-- 15' 11 ----------------------------------------------" )
         day15_11.main()
+        print( "-- 15' 12 ----------------------------------------------" )
+        day15_12.main()
     except Exception as ex:
         helper.print_ex( ex )
