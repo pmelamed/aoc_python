@@ -82,7 +82,7 @@ def main():
                lambda d: task2(d, 2503),
                read_file('../data/input/year15/day15_14.in'),
                2660,
-               None)
+               1256)
 
 
 if __name__ == '__main__':
