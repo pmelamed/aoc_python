@@ -219,8 +219,9 @@ class Field2D[ DataT ]:
                     result += 1
         return result
 
-    def count_around( self, cell: Coord2D, filter_fn: Callable[ [ DataT ], bool ], dirs: Iterable[ Coord2D ] ):
-        return len( [ direction for direction in dirs if filter_fn( self[ cell + direction ] ) ] )
+    def count_around(self, cell: Coord2D, filter_fn: Callable[[DataT], bool], dirs: Iterable[Coord2D]):
+        do_filter = lambda coord: self.contains(coord) and filter_fn(self[coord])
+        return len([direction for direction in dirs if do_filter(cell + direction)])
 
     def turn90_cw( self ):
         return Field2D.from_generate(
