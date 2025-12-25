@@ -1,10 +1,7 @@
 import functools
-import itertools
 import operator
 import re
-from itertools import permutations
 from typing import Callable
-from xml.sax.handler import property_encoding
 
 from helper import exec_tasks, print_ex, read_file
 

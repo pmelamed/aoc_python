@@ -2,7 +2,6 @@ import json
 
 from helper import exec_tasks, first_line, print_ex, read_file
 
-
 ALLOWED_CHARS = "abcdefghjkmnpqrstuvwxyz"
 ALLOWED_CHARS_COUNT = len( ALLOWED_CHARS )
 

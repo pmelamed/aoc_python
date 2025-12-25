@@ -1,5 +1,4 @@
 import re
-from itertools import permutations
 
 from helper import exec_tasks, print_ex, read_file
 
