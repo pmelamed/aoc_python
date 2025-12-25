@@ -41,5 +41,7 @@ if __name__ == '__main__':
         day15_12.main()
         print( "-- 15' 13 ----------------------------------------------" )
         day15_13.main()
+        print( "-- 15' 14 ----------------------------------------------" )
+        day15_14.main()
     except Exception as ex:
         helper.print_ex( ex )
