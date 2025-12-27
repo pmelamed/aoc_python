@@ -1,6 +1,7 @@
-NOT_FOUND = 0xFFFFFFFF
-
 from helper import exec_tasks, print_ex, read_file
+
+
+NOT_FOUND = 0xFFFFFFFF
 
 
 class Data:
