@@ -175,6 +175,12 @@ def first[ _T ]( itr: Iterable[ _T ] ) -> Optional[ _T ]:
         return v
     return None
 
+verbose_level = 0
+
+def log( msg: str, lvl: int = 10 ) -> None:
+    if verbose_level >= lvl:
+        print( msg )
+
 
 def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
         prepare_fn: Callable[ [ list[ str ] ], DataT ] | None,
