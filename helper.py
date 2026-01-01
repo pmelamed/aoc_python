@@ -177,9 +177,9 @@ def first[ _T ]( itr: Iterable[ _T ] ) -> Optional[ _T ]:
 
 verbose_level = 0
 
-def log( msg: str, lvl: int = 10 ) -> None:
+def log( msg: str, end : str = "\n", lvl: int = 10 ) -> None:
     if verbose_level >= lvl:
-        print( msg )
+        print( msg , end = end )
 
 
 def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](

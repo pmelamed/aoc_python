@@ -146,7 +146,6 @@ def iterate_battle_turns(
 
     # Apply effects
     state.armor = 0
-    active_spells = set()
     for effect in state.effects:
         effect.spell.apply_fn( state )
         effect.timer -= 1
