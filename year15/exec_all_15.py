@@ -22,6 +22,7 @@ import day15_21
 import day15_22
 import day15_23
 import day15_24
+import day15_25
 import helper
 
 
@@ -75,5 +76,7 @@ if __name__ == '__main__':
         day15_23.main()
         print( "-- 15' 24 ----------------------------------------------" )
         day15_24.main()
+        print( "-- 15' 25 ----------------------------------------------" )
+        day15_25.main()
     except Exception as ex:
         helper.print_ex( ex )
