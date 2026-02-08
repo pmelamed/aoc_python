@@ -88,6 +88,9 @@ class Rect2D:
     def __iter__(self):
         return Rect2DIterator(self)
 
+    def __contains__(self, item):
+        return self.a.x <= item.x < self.b.x and self.a.y <= item.y < self.b.y
+
     def square(self):
         s = self.a - self.b
         return abs(s.x * s.y)
