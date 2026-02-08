@@ -1,7 +1,5 @@
-from sympy.strategies.core import switch
-
 from geom2d import Coord2D, Rect2D
-from helper import exec_tasks, first_line, print_ex, read_file, turn_cw90, turn_ccw90
+from helper import exec_tasks, print_ex, read_file
 
 DIRECTIONS = {
     'U': Coord2D(0, -1),
