@@ -175,6 +175,16 @@ def first[ _T ]( itr: Iterable[ _T ] ) -> Optional[ _T ]:
         return v
     return None
 
+def set_exclude[ _T ]( s: set[_T], elem: _T ) -> set[_T]:
+    result = set( s )
+    result.remove( elem )
+    return result
+
+def set_include[ _T ]( s: set[_T], elem: _T ) -> set[_T]:
+    result = set( s )
+    result.add( elem )
+    return result
+
 verbose_level = 0
 
 def log( msg: str, end : str = "\n", lvl: int = 10 ) -> None:
