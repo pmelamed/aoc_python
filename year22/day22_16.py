@@ -1,6 +1,5 @@
 import itertools
 import re
-from typing import Literal, Optional
 
 import helper
 from helper import print_ex, read_file
@@ -65,6 +64,8 @@ def parse_data( lines: list[ str ] ) -> Data:
     rooms: list[ Room ] = [ ]
     for line in lines:
         match = INPUT_PATTERN.match( line )
+        if match is None:
+            raise ValueError( f"Invalid data line: {line}" )
         rooms.append( Room( match.group( 1 ), int( match.group( 2 ) ), match.group( 3 ).split( ", " ) ) )
     flows = dict( (room.name, room.flow) for room in rooms if room.flow > 0 )
     bits = dict( [ (name, 1 << bit) for bit, name in enumerate( flows.keys() ) ] )
@@ -103,29 +104,46 @@ def parse_data( lines: list[ str ] ) -> Data:
 
 
 def task1( data: Data ) -> int:
-    return find_way(
+    best_ways = dict()
+    enum_best_ways(
+            data,
+            best_ways,
             "AA",
-            set( data.flows.keys() ),
-            data.distances,
-            data.flows,
             TASK1_MINUTES,
             0,
-            "AA"
+            0,
+            set( data.flows.keys() )
     )
+    return max( best_ways.values() )
+    # return find_way(
+    #         "AA",
+    #         set( data.flows.keys() ),
+    #         data.distances,
+    #         data.flows,
+    #         TASK1_MINUTES,
+    #         0,
+    #         "AA"
+    # )
 
 
 def task2( data: Data ) -> int:
-    print( f"Rooms with flow[{len( data.flows )}] = {data.flows}" )
-    return 0
-    # return find_way2(
-    #         State(
-    #                 (CharPos( "AA", TASK2_MINUTES, "AA" ), CharPos( "AA", TASK2_MINUTES, "AA" )),
-    #                 { *data.flows.keys() },
-    #                 0
-    #         ),
-    #         data.distances,
-    #         data.flows
-    # )
+    best_ways = dict()
+    enum_best_ways(
+            data,
+            best_ways,
+            "AA",
+            TASK2_MINUTES,
+            0,
+            0,
+            set( data.flows.keys() )
+    )
+    max_flow = 0
+    for mask1, flow1 in best_ways.items():
+        for mask2, flow2 in best_ways.items():
+            if mask1 & mask2 != 0 :
+                continue
+            max_flow = max( max_flow, flow1 + flow2 )
+    return max_flow
 
 
 def find_way(
@@ -165,50 +183,6 @@ def find_way(
     return max_flow
 
 
-def get_updated_state(
-        state: State,
-        character: Literal[ 0, 1 ],
-        target: str,
-        distances: dict[ DistanceKey, int ],
-        flows: dict[ str, int ]
-) -> Optional[ State ]:
-    chars: tuple[ CharPos, CharPos ] = state.characters
-    char_pos = chars[ character ]
-    pos = char_pos.room
-    time_left = char_pos.time_left
-    distance = distances[ (pos, target) ]
-    if time_left < distance + 1:
-        return None
-    new_pos = CharPos(
-            target,
-            time_left - distance - 1,
-            f"{char_pos.way} --{distance}--> {target}(t={time_left - distance - 1},dF={flows[ target ]})"
-    )
-    chars = (new_pos, chars[ 1 ]) if character == 0 else (chars[ 0 ], new_pos)
-    return State(
-            chars,
-            state.closed - { target },
-            state.agg_flow + chars[ character ].time_left * flows[ target ]
-    )
-
-
-def find_way2( state: Optional[ State ], distances: dict[ DistanceKey, int ], flows: dict[ str, int ] ) -> int:
-    if state is None:
-        return 0
-    max_flow = state.agg_flow
-    for target in state.closed:
-        max_flow = max(
-                max_flow,
-                find_way2( get_updated_state( state, 0, target, distances, flows ), distances, flows ),
-                find_way2( get_updated_state( state, 1, target, distances, flows ), distances, flows )
-        )
-        # if max_flow == state.agg_flow:
-        #     print( f"\n{state.agg_flow} vvv" )
-        #     for cp in state.characters:
-        #         print( f"    {cp.way}" )
-    return max_flow
-
-
 def enum_best_ways(
         data: Data,
         best_ways: dict[ int, int ],
@@ -229,19 +203,18 @@ def enum_best_ways(
         if distance + 1 > minutes_left:
             continue
         new_minutes_left = minutes_left - distance - 1
-        new_agg_flow = agg_flow + new_minutes_left * flows[ target ]
+        new_agg_flow = agg_flow + new_minutes_left * data.flows[ target ]
         new_closed = closed - { target }
-        new_flow = find_way(
+        new_mask = current_mask | data.bits[ target ]
+        enum_best_ways(
+                data,
+                best_ways,
                 target,
-                new_closed,
-                distances,
-                flows,
                 new_minutes_left,
                 new_agg_flow,
-                f"{current_way} --{distance}--> {target}(dF={flows[ target ]},F={new_agg_flow},t={new_minutes_left})"
+                new_mask,
+                new_closed
         )
-        if new_flow > max_flow:
-            max_flow = new_flow
 
     pass
 
@@ -254,7 +227,7 @@ def main():
             task2,
             read_file( '../data/input/year22/day22_16.in' ),
             1862,
-            None
+            2422
     )
 
 
