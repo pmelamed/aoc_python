@@ -175,21 +175,25 @@ def first[ _T ]( itr: Iterable[ _T ] ) -> Optional[ _T ]:
         return v
     return None
 
-def set_exclude[ _T ]( s: set[_T], elem: _T ) -> set[_T]:
+
+def set_exclude[ _T ]( s: set[ _T ], elem: _T ) -> set[ _T ]:
     result = set( s )
     result.remove( elem )
     return result
 
-def set_include[ _T ]( s: set[_T], elem: _T ) -> set[_T]:
+
+def set_include[ _T ]( s: set[ _T ], elem: _T ) -> set[ _T ]:
     result = set( s )
     result.add( elem )
     return result
 
+
 verbose_level = 0
 
-def log( msg: str, end : str = "\n", lvl: int = 10 ) -> None:
+
+def log( msg: str, end: str = "\n", lvl: int = 10 ) -> None:
     if verbose_level >= lvl:
-        print( msg , end = end )
+        print( msg, end = end )
 
 
 def exec_tasks[ DataT, ResultT1: str | int, ResultT2: str | int ](
@@ -276,3 +280,29 @@ def ignore_args( n: int, fn: Callable ):
 
 def first_line( lines: list[ str ] ) -> str:
     return lines[ 0 ]
+
+
+def create_nd_array[ DataT ](
+        dims: tuple[ int, ... ],
+        /,
+        *,
+        gen_fn: Optional[ Callable[ [ list[ int ] ], DataT | None ] ] = None,
+        value: Optional[ DataT ] = None
+):
+    return create_sub_array( dims, [ ], gen_fn if gen_fn is not None else lambda _: value )
+
+
+def create_sub_array[ DataT ](
+        dims: tuple[ int, ... ],
+        coords: list[ int ],
+        gen_fn: Callable[ [ list[ int ] ], DataT | None ]
+):
+    if len( coords ) == len( dims ):
+        return gen_fn( coords )
+    new_coords = [ c for c in coords ]
+    new_coords.append( 0 )
+    result = [ ]
+    for crd in range( dims[ len( coords ) ] ):
+        new_coords[ -1 ] = crd
+        result.append( create_sub_array( dims, new_coords, gen_fn ) )
+    return result

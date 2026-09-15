@@ -86,6 +86,9 @@ class Rect3D:
     def __str__( self ):
         return f"{self.a}~{self.b}"
 
+    def __contains__(self, item: Coord3D ):
+        return self.a.x <= item.x < self.b.x and self.a.y <= item.y < self.b.y and self.a.z <= item.z < self.b.z
+
     def volume( self ):
         s = self.a - self.b
         return abs( s.x * s.y * s.z )
